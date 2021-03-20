@@ -13,8 +13,7 @@ include(
     'client',
     'common',
     'server',
-    'proto',
-    'events'
+    'proto'
 )
 
 // project(':client').projectDir = new File('./client')

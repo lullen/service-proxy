@@ -16,7 +16,6 @@ dependencies {
 
     compile project(':proto')
     compile project(':common')
-    compile project(':events')
 }
 
 application {

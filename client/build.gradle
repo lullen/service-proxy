@@ -10,7 +10,6 @@ plugins {
 
 dependencies {
     compile project(':proto')
-    compile project(':events')
     compile project(':common')
 }
 
