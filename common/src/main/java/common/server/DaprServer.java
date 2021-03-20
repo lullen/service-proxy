@@ -23,11 +23,11 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 
-import common.pubsub.PubSubSubscription;
+import common.pubsub.Subscription;
 import common.pubsub.Subscriber;
 
 public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
-    private ArrayList<PubSubSubscription> subscriptions = new ArrayList<PubSubSubscription>();
+    private ArrayList<Subscription> subscriptions = new ArrayList<Subscription>();
     private Map<String, Class<?>> services = new HashMap<String, Class<?>>();
     private Injector _injector;
 
@@ -133,7 +133,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
             for (var method : clazz.getMethods()) {
                 var subscriber = method.getAnnotation(Subscriber.class);
                 if (subscriber != null) {
-                    var s = new PubSubSubscription();
+                    var s = new Subscription();
                     s.method = clazz.getSimpleName() + "." + method.getName();
                     s.topic = subscriber.topic();
                     s.pubsub = pubsub;
