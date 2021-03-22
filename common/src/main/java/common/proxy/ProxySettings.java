@@ -1,7 +1,7 @@
 package common.proxy;
 
 public class ProxySettings {
-    public String type; 
+    public ProxyType type; 
     public String pubsubName; 
     public String secretStoreName; 
 }

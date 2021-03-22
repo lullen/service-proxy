@@ -43,7 +43,6 @@ public class ServiceProxy implements IServiceProxy {
             try (DaprClient client = new DaprClientBuilder().build()) {
                 client.publishEvent(_settings.pubsubName, topic, serializedRequest).block();
             }
-
         }
 
         @Override
@@ -102,7 +101,7 @@ public class ServiceProxy implements IServiceProxy {
 
     @Override
     public <T> T invoke(String appId, String method, Message request, Class<T> responseClass) throws Exception {
-        if (_settings.type == "dapr") {
+        if (_settings.type == ProxyType.Dapr) {
             return new DaprProxy().invoke(appId, method, request, responseClass);
         } else {
             return new InProxProxy().invoke(appId, method, request, responseClass);
@@ -111,17 +110,16 @@ public class ServiceProxy implements IServiceProxy {
 
     @Override
     public void publish(String topic, Message request) throws Exception {
-        if (_settings.type == "dapr") {
+        if (_settings.type == ProxyType.Dapr) {
             new DaprProxy().publish(topic, request);
         } else {
             new InProxProxy().publish(topic, request);
         }
-
     }
 
     @Override
     public Map<String, String> secret(String key) throws Exception {
-        if (_settings.type == "dapr") {
+        if (_settings.type == ProxyType.Dapr) {
             return new DaprProxy().secret(key);
         } else {
             return new InProxProxy().secret(key);

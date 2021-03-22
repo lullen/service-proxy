@@ -11,6 +11,7 @@ public class HelloServiceImpl implements Hello {
 
     @Override
     public HelloResponse hello(HelloRequest request) {
+        System.out.print("HelloServiceImpl.hello called");
         var response = HelloResponse.newBuilder().setText("Hello " + request.getText() + " " + request.getOtherText())
                 .setOtherText(request.getOtherText()).build();
         System.out.println("Hello " + request.getText() + " " + new Date().getTime());
