@@ -1,12 +1,13 @@
 package client.app;
 
 import common.proxy.ProxySettings;
+import common.proxy.ProxyType;
 import common.proxy.ServiceProxy;
 
 public class App {
     public static void main(String[] args) throws Exception {
         var settings = new ProxySettings();
-        settings.type = "dapr";
+        settings.type = ProxyType.Dapr;
         settings.pubsubName = "pubsub";
         settings.secretStoreName = "secretstore";
         ServiceProxy.init(settings);

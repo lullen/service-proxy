@@ -10,6 +10,7 @@ import com.google.inject.Guice;
 import client.app.ServiceCaller;
 import common.helpers.ServiceLoader;
 import common.proxy.ProxySettings;
+import common.proxy.ProxyType;
 import common.proxy.ServiceProxy;
 import server.app.DaprModule;
 import server.interfaces.Hello;
@@ -20,7 +21,7 @@ public class App {
         var injector = Guice.createInjector(new DaprModule());
 
         var settings = new ProxySettings();
-        settings.type = "inproc";
+        settings.type = ProxyType.InProc;
         settings.pubsubName = "pubsub";
         settings.secretStoreName = "secretstore";
         ServiceProxy.init(settings);
