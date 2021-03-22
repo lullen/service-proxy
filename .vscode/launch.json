@@ -8,8 +8,8 @@
             "type": "java",
             "name": "Launch App",
             "request": "launch",
-            "mainClass": "server.app.App",
-            "projectName": "server"
+            "mainClass": "poc.app.App",
+            "projectName": "app"
         },
         {
             "type": "java",

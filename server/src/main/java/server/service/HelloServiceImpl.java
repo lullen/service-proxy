@@ -5,7 +5,6 @@ import java.util.Date;
 import com.budbee.proto.HelloRequest;
 import com.budbee.proto.HelloResponse;
 
-import events.server.HelloEvent;
 import server.interfaces.Hello;
 
 public class HelloServiceImpl implements Hello {
@@ -19,9 +18,4 @@ public class HelloServiceImpl implements Hello {
         return response;
     }
 
-    @Override
-    public HelloResponse onHello(HelloEvent event) {
-        System.out.println("Got: " + event.hello);
-        return HelloResponse.newBuilder().setText("Resp: " + event.hello).build();
-    }
 }
