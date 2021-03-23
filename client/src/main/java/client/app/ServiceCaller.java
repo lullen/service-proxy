@@ -22,8 +22,7 @@ public class ServiceCaller {
             _logger.info(request.getText() + " " + request.getNewText());
 
             var resp = sp.invoke("server", "Hello.hello", request, HelloResponse.class);
-            // _logger.info("Response: " + resp.getText() + " " +
-            // resp.getOtherText());
+            _logger.info("Response: " + resp.error.getError());
         }
         _logger.info("Total: " + (System.currentTimeMillis() - start) + " ms");
         return System.currentTimeMillis() - start;

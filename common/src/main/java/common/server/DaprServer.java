@@ -7,6 +7,7 @@ import io.dapr.v1.DaprAppCallbackProtos.*;
 import io.dapr.v1.DaprAppCallbackProtos.TopicEventResponse.TopicEventResponseStatus;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
@@ -23,6 +24,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import common.helpers.ServiceLoader;
+import common.model.Response;
+import common.model.StatusCode;
 
 public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
     private static final Logger _logger = LogManager.getLogger(DaprServer.class);
@@ -80,6 +83,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
      * @param responseObserver Dapr envelope response.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void onInvoke(CommonProtos.InvokeRequest request,
             StreamObserver<CommonProtos.InvokeResponse> responseObserver) {
         try {
@@ -88,15 +92,38 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
             var invokeMethod = ServiceLoader.getMethod(request.getMethod(), refClass.getClass());
             var innerRequest = getRequest(invokeMethod, request.getData().getValue());
 
-            var response = (com.google.protobuf.Message) invokeMethod.invoke(refClass, innerRequest);
+            var response = (Response<com.google.protobuf.Message>) invokeMethod.invoke(refClass, innerRequest);
+
+            if (response.hasError()) {
+                var status = getGrpcError(response.error.getStatusCode()).withDescription(response.error.getError());
+                responseObserver.onError(status.asRuntimeException());
+                return;
+            }
 
             var responseBuilder = CommonProtos.InvokeResponse.newBuilder();
-            responseBuilder.setData(Any.pack(response));
+            responseBuilder.setData(Any.pack(response.result));
             responseObserver.onNext(responseBuilder.build());
             responseObserver.onCompleted();
         } catch (Exception e) {
             e.printStackTrace();
             responseObserver.onError(e);
+        }
+    }
+
+    private Status getGrpcError(StatusCode code) throws Exception {
+        switch (code) {
+        case AlreadyExists:
+            return Status.ALREADY_EXISTS;
+        case Exception:
+            return Status.INTERNAL;
+        case NotFound:
+            return Status.NOT_FOUND;
+        case InvalidInput:
+            return Status.INVALID_ARGUMENT;
+        case Unauthorized:
+            return Status.UNAUTHENTICATED;
+        default:
+            throw new Exception("Invalid error status code");
         }
     }
 
@@ -126,15 +153,15 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
     @Override
     public void onTopicEvent(TopicEventRequest request, StreamObserver<TopicEventResponse> responseObserver) {
         try {
-            var subscription = ServiceLoader.getSubscriptions().stream().filter(s -> s.topic.equals(request.getTopic())).findFirst()
-                    .orElseThrow();
+            var subscription = ServiceLoader.getSubscriptions().stream().filter(s -> s.topic.equals(request.getTopic()))
+                    .findFirst().orElseThrow();
             var refClass = ServiceLoader.create(subscription.method);
             var invokeMethod = ServiceLoader.getMethod(subscription.method, refClass.getClass());
 
             var returnType = invokeMethod.getParameterTypes()[0];
 
             var a = returnType.getMethod("newBuilder", null);
-            var builder = (Message.Builder) a.invoke(null, null);
+            var builder = (Message.Builder) a.invoke(null);
 
             var json = new DefaultObjectSerializer().deserialize(request.getData().toByteArray(), String.class);
             com.google.protobuf.util.JsonFormat.parser().merge(json, builder);

@@ -6,14 +6,19 @@ import java.util.HashMap;
 
 import com.google.gson.Gson;
 import com.google.protobuf.Message;
+import io.grpc.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import common.helpers.ServiceLoader;
+import common.model.Error;
+import common.model.Response;
+import common.model.StatusCode;
 import io.dapr.client.DaprClient;
 import io.dapr.client.DaprClientBuilder;
 import io.dapr.client.domain.HttpExtension;
+import io.dapr.exceptions.DaprException;
 import io.dapr.serializer.DefaultObjectSerializer;
 
 public class ServiceProxy implements IServiceProxy {
@@ -34,11 +39,47 @@ public class ServiceProxy implements IServiceProxy {
 
     private class DaprProxy implements IServiceProxy {
         @Override()
-        public <T> T invoke(String appId, String method, Message request, Class<T> responseClass) throws Exception {
+        public <T> Response<T> invoke(String appId, String method, Message request, Class<T> responseClass)
+                throws Exception {
+
+            Response<T> methodResult;
+
             try (DaprClient client = new DaprClientBuilder().build()) {
-                var resp = client.invokeMethod(appId, method, request, HttpExtension.NONE, responseClass).block();
-                return (T) resp;
+                try {
+                    var resp = client.invokeMethod(appId, method, request, HttpExtension.NONE, responseClass).block();
+                    methodResult = new Response<T>(resp);
+                } catch (DaprException exception) {
+                    var errorCode = StatusCode.Exception;
+                    var code = Status.Code.valueOf(exception.getErrorCode());
+
+                    switch (code) {
+                    case ALREADY_EXISTS:
+                        errorCode = StatusCode.AlreadyExists;
+                        break;
+                    case INVALID_ARGUMENT:
+                        errorCode = StatusCode.InvalidInput;
+                        break;
+                    case NOT_FOUND:
+                        errorCode = StatusCode.NotFound;
+                        break;
+                    case UNAUTHENTICATED:
+                        errorCode = StatusCode.Unauthorized;
+                        break;
+                    default:
+                        errorCode = StatusCode.Exception;
+                        break;
+                    }
+
+                    methodResult = new Response<T>();
+                    methodResult.error = new Error(errorCode, exception.getMessage());
+
+                    _logger.warn("Method " + method + " returned " + methodResult.error.getStatusCode()
+                            + " with message " + methodResult.error.getError());
+
+                    methodResult.error = new Error(errorCode, exception.getMessage());
+                }
             }
+            return methodResult;
         }
 
         @Override
@@ -62,19 +103,23 @@ public class ServiceProxy implements IServiceProxy {
     private class InProxProxy implements IServiceProxy {
         @Override()
         @SuppressWarnings("unchecked")
-        public <T> T invoke(String appId, String method, Message request, Class<T> responseClass) throws Exception {
+        public <T> Response<T> invoke(String appId, String method, Message request, Class<T> responseClass)
+                throws Exception {
+
             var instance = ServiceLoader.create(method);
             var invokeMethod = ServiceLoader.getMethod(method, instance.getClass());
 
             var start = System.currentTimeMillis();
-            var response = invokeMethod.invoke(instance, request);
-            var end = System.currentTimeMillis();
+            var response = (Response<T>) invokeMethod.invoke(instance, request);
 
-            _logger.info("Calling " + method + " took: " + (end - start) + "ms");
-            if (response.getClass().equals(responseClass)) {
-                return (T) response;
+            if (response.hasError() && response.result != null) {
+                response.result = null;
+                _logger.warn("Removing result as response has errors.");
             }
-            return null;
+
+            var end = System.currentTimeMillis();
+            _logger.info("Calling " + method + " took: " + (end - start) + "ms");
+            return response;
         }
 
         @Override
@@ -117,10 +162,12 @@ public class ServiceProxy implements IServiceProxy {
             var val = jsonObj.get(key);
             return (String) val;
         }
+
     }
 
     @Override
-    public <T> T invoke(String appId, String method, Message request, Class<T> responseClass) throws Exception {
+    public <T> Response<T> invoke(String appId, String method, Message request, Class<T> responseClass)
+            throws Exception {
         if (_settings.type == ProxyType.Dapr) {
             return new DaprProxy().invoke(appId, method, request, responseClass);
         } else {
