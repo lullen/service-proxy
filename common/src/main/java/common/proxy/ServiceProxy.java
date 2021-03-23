@@ -73,8 +73,8 @@ public class ServiceProxy implements IServiceProxy {
                     methodResult = new Response<T>();
                     methodResult.error = new Error(errorCode, exception.getMessage());
 
-                    _logger.warn("Method " + method + " returned " + methodResult.error.getStatusCode()
-                            + " with message " + methodResult.error.getError());
+                    _logger.warn("Method {} returned {} with message {}", method, methodResult.error.getStatusCode(),
+                            methodResult.error.getError());
 
                     methodResult.error = new Error(errorCode, exception.getMessage());
                 }
@@ -118,7 +118,7 @@ public class ServiceProxy implements IServiceProxy {
             }
 
             var end = System.currentTimeMillis();
-            _logger.info("Calling " + method + " took: " + (end - start) + "ms");
+            _logger.info("Calling {} took: {} ms", method, (end - start));
             return response;
         }
 
@@ -128,7 +128,7 @@ public class ServiceProxy implements IServiceProxy {
                 throw new Exception("Property pubsubName is not set");
             }
 
-            _logger.info("InProc: Published event to topic " + topic + " on " + _settings.pubsubName);
+            _logger.info("InProc: Published event to topic {} on {}", topic, _settings.pubsubName);
 
             var subscription = ServiceLoader.getSubscriptions().stream().filter(s -> s.topic.equals(topic)).findFirst();
             if (subscription.isPresent()) {

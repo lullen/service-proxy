@@ -7,11 +7,15 @@ import java.util.Map;
 
 import com.google.inject.Injector;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import common.pubsub.Subscriber;
 import common.pubsub.Subscription;
 import common.server.ExposedService;
 
 public class ServiceLoader {
+    private static final Logger _logger = LogManager.getLogger(ServiceLoader.class);
     private static Map<String, Class<?>> _services = new HashMap<String, Class<?>>();
     private static ArrayList<Subscription> _subscriptions = new ArrayList<Subscription>();
 
@@ -51,7 +55,7 @@ public class ServiceLoader {
     public static Map<String, Class<?>> getServices() {
         return _services;
     }
-    
+
     public static void registerServices(Iterable<Class<?>> classes) {
         for (var clazz : classes) {
             var exposedService = clazz.getAnnotation(ExposedService.class);
@@ -59,13 +63,13 @@ public class ServiceLoader {
                 _services.put(clazz.getSimpleName().toLowerCase(), clazz);
             }
         }
-        System.out.println("Registered " + _services.size() + " services.");
+        _logger.info("Registered {} services.", _services.size());
     }
 
     public static ArrayList<Subscription> getSubscriptions() {
         return _subscriptions;
     }
-    
+
     public static void registerSubscribers(String pubsub) {
         ServiceLoader.getServices().forEach((k, clazz) -> {
             for (var method : clazz.getMethods()) {
@@ -75,11 +79,11 @@ public class ServiceLoader {
                     s.method = clazz.getSimpleName() + "." + method.getName();
                     s.topic = subscriber.topic();
                     s.pubsub = pubsub;
-                    System.out.println("Registering " + s.topic + " on " + s.method);
+                    _logger.info("Registering {} on {}", s.topic, s.method);
                     _subscriptions.add(s);
                 }
             }
         });
-        System.out.println("Registered " + _subscriptions.size() + " topics");
+        _logger.info("Registered {} topics", _subscriptions.size());
     }
 }

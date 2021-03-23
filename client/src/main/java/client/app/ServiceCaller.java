@@ -24,7 +24,7 @@ public class ServiceCaller {
             var resp = sp.invoke("server", "Hello.hello", request, HelloResponse.class);
             _logger.info("Response: " + resp.error.getError());
         }
-        _logger.info("Total: " + (System.currentTimeMillis() - start) + " ms");
+        _logger.info("Total: {} ms", (System.currentTimeMillis() - start));
         return System.currentTimeMillis() - start;
     }
 
@@ -57,7 +57,7 @@ public class ServiceCaller {
             var secret = client.secret("secret" + secretNumber);
             _logger.info("Got secret value: " + secret);
         }
-        _logger.info("Total: " + (System.currentTimeMillis() - start) + " ms");
+        _logger.info("Total: {} ms", (System.currentTimeMillis() - start));
         return System.currentTimeMillis() - start;
     }
 }

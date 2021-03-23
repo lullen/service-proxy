@@ -34,7 +34,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
     DaprServer(Injector injector) {
         ServiceLoader.init(injector);
     }
-    
+
     private Server server;
 
     /**
@@ -89,7 +89,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
             var invokeMethod = ServiceLoader.getMethod(request.getMethod(), refClass.getClass());
             var innerRequest = getRequest(invokeMethod, request.getData().getValue());
 
-            var response = (Response<com.google.protobuf.Message>) invokeMethod.invoke(refClass, innerRequest);
+            var response = (Response<Message>) invokeMethod.invoke(refClass, innerRequest);
 
             if (response.hasError()) {
                 var status = getGrpcError(response.error.getStatusCode()).withDescription(response.error.getError());
