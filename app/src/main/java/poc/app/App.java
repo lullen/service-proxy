@@ -5,6 +5,7 @@ package poc.app;
 
 import java.util.List;
 
+import com.budbee.proto.HelloRequest;
 import com.google.inject.Guice;
 
 import org.apache.logging.log4j.Level;
@@ -12,6 +13,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import client.app.ServiceCaller;
 import common.helpers.ServiceLoader;
+import common.proxy.ClassServiceProxy;
 import common.proxy.ProxySettings;
 import common.proxy.ProxyType;
 import common.proxy.ServiceProxy;
@@ -33,6 +35,10 @@ public class App {
         ServiceLoader.init(injector);
         ServiceLoader.registerServices(List.of(Hello.class));
         ServiceLoader.registerSubscribers("pubsub");
+
+        var proxy = ClassServiceProxy.create(Hello.class);
+        var res = proxy.hello(HelloRequest.newBuilder().setText("New proxy!").setOtherText("Other").build());
+        System.out.println("Res " + res.result.getText());
 
         var caller = new ServiceCaller();
         caller.call();

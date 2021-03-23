@@ -34,10 +34,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
     DaprServer(Injector injector) {
         ServiceLoader.init(injector);
     }
-
-    /**
-     * Server mode: Grpc server.
-     */
+    
     private Server server;
 
     /**
@@ -134,7 +131,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
             listTopics.addSubscriptions(TopicSubscription.newBuilder().setPubsubName(subscription.pubsub)
                     .setTopic(subscription.topic).build());
         }
-        System.out.println("Listing " + listTopics.getSubscriptionsCount() + " topics.");
+        _logger.info("Listing {} topics.", listTopics.getSubscriptionsCount());
         var response = listTopics.build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -160,7 +157,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
 
             var returnType = invokeMethod.getParameterTypes()[0];
 
-            var a = returnType.getMethod("newBuilder", null);
+            var a = returnType.getMethod("newBuilder");
             var builder = (Message.Builder) a.invoke(null);
 
             var json = new DefaultObjectSerializer().deserialize(request.getData().toByteArray(), String.class);
