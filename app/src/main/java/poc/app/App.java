@@ -7,6 +7,9 @@ import java.util.List;
 
 import com.google.inject.Guice;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
+
 import client.app.ServiceCaller;
 import common.helpers.ServiceLoader;
 import common.proxy.ProxySettings;
@@ -17,23 +20,23 @@ import server.interfaces.Hello;
 
 public class App {
     public static void main(String[] args) throws Exception {
+        Configurator.setRootLevel(Level.DEBUG);
 
         var injector = Guice.createInjector(new DaprModule());
 
         var settings = new ProxySettings();
         settings.type = ProxyType.InProc;
         settings.pubsubName = "pubsub";
-        settings.secretStoreName = "secretstore";
+        settings.secretStoreName = "secrets.json";
         ServiceProxy.init(settings);
 
         ServiceLoader.init(injector);
         ServiceLoader.registerServices(List.of(Hello.class));
         ServiceLoader.registerSubscribers("pubsub");
-        // final var service = injector.getInstance(DaprServer.class);
-        // service.start(5000);
-        // service.RegisterSubscribers("pubsub", List.of(HelloService.class));
-        // service.awaitTermination();
+
         var caller = new ServiceCaller();
+        caller.call();
         caller.publish();
+        caller.getSecrets();
     }
 }

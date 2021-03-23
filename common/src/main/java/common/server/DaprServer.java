@@ -18,9 +18,14 @@ import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import common.helpers.ServiceLoader;
 
 public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
+    private static final Logger _logger = LogManager.getLogger(DaprServer.class);
 
     @Inject
     DaprServer(Injector injector) {
@@ -41,16 +46,16 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
     public DaprServer start(int port) throws IOException {
 
         this.server = ServerBuilder.forPort(port).addService(this).build().start();
-        System.out.printf("Server: started listening on port %d\n", port);
+        _logger.info("Server: started listening on port %d\n", port);
 
         // Now we handle ctrl+c (or any other JVM shutdown)
         Runtime.getRuntime().addShutdownHook(new Thread() {
 
             @Override
             public void run() {
-                System.out.println("Server: shutting down gracefully ...");
+                _logger.info("Server: shutting down gracefully ...");
                 DaprServer.this.server.shutdown();
-                System.out.println("Server: Bye.");
+                _logger.info("Server: Bye.");
             }
         });
         return this;

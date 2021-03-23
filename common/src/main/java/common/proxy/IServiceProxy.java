@@ -9,5 +9,5 @@ public interface IServiceProxy {
 
     void publish(String topic, Message request) throws Exception;
 
-    Map<String, String> secret(String key) throws Exception;
+    String secret(String key) throws Exception;
 }
