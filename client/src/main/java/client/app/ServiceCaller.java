@@ -1,6 +1,6 @@
 package client.app;
 
-import com.budbee.proto.HelloRequest;
+import com.test.proto.HelloRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

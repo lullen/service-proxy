@@ -2,8 +2,8 @@ package server.service;
 
 import java.util.Date;
 
-import com.budbee.proto.HelloRequest;
-import com.budbee.proto.HelloResponse;
+import com.test.proto.HelloRequest;
+import com.test.proto.HelloResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
