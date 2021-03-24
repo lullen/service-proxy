@@ -21,9 +21,11 @@ public class HelloServiceImpl implements Hello {
         _logger.info("HelloServiceImpl.hello called");
         var response = HelloResponse.newBuilder().setText("Hello " + request.getText() + " " + request.getOtherText())
                 .setOtherText(request.getOtherText()).build();
-        _logger.info("Hello {} {}" , request.getText(), new Date().getTime());
+        _logger.info("Hello {} {}", request.getText(), new Date().getTime());
         if (request.getText().contains("5")) {
-            return new Response<HelloResponse>(new Error(StatusCode.InvalidInput, "Invalid stuff here"));
+            var res = new Response<HelloResponse>(new Error(StatusCode.InvalidInput, "Invalid stuff here"));
+            res.result = response;
+            return res;
         }
         return new Response<HelloResponse>(response);
     }

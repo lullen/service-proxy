@@ -22,7 +22,6 @@ repositories {
 dependencies {
 
     implementation 'io.dapr:dapr-sdk:1.0.0'
-    implementation 'com.google.inject:guice:5.0.1'
     implementation 'org.apache.commons:commons-text'
 
     compile project(':client')

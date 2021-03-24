@@ -84,7 +84,6 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
     public void onInvoke(CommonProtos.InvokeRequest request,
             StreamObserver<CommonProtos.InvokeResponse> responseObserver) {
         try {
-
             var refClass = ServiceLoader.create(request.getMethod());
             var invokeMethod = ServiceLoader.getMethod(request.getMethod(), refClass.getClass());
             var innerRequest = getRequest(invokeMethod, request.getData().getValue());
@@ -166,9 +165,13 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
             var event = builder.build();
 
             // If response is a response wrapper, check status and set status accordingly.
-            invokeMethod.invoke(refClass, event);
+            var response = (Response<?>) invokeMethod.invoke(refClass, event);
 
-            var eventResponse = TopicEventResponse.newBuilder().setStatus(TopicEventResponseStatus.SUCCESS).build();
+            var status = TopicEventResponseStatus.SUCCESS;
+            if (response.hasError()) {
+                status = TopicEventResponseStatus.RETRY;
+            }
+            var eventResponse = TopicEventResponse.newBuilder().setStatus(status).build();
             responseObserver.onNext(eventResponse);
             responseObserver.onCompleted();
         } catch (Exception e) {

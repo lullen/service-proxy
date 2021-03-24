@@ -13,10 +13,11 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 import client.app.ServiceCaller;
 import common.helpers.ServiceLoader;
-import common.proxy.ClassServiceProxy;
-import common.proxy.ProxySettings;
-import common.proxy.ProxyType;
 import common.proxy.ServiceProxy;
+import common.proxy.ProxyType;
+import common.proxy.SecretStore;
+import common.proxy.EventPublisher;
+import common.proxy.ProxyModule;
 import server.app.DaprModule;
 import server.interfaces.Hello;
 
@@ -24,19 +25,17 @@ public class App {
     public static void main(String[] args) throws Exception {
         Configurator.setRootLevel(Level.DEBUG);
 
-        var injector = Guice.createInjector(new DaprModule());
+        var injector = Guice.createInjector(new ProxyModule(), new DaprModule());
 
-        var settings = new ProxySettings();
-        settings.type = ProxyType.InProc;
-        settings.pubsubName = "pubsub";
-        settings.secretStoreName = "secrets.json";
-        ServiceProxy.init(settings);
+        ServiceProxy.init(ProxyType.InProc, injector);
+        EventPublisher.init("pubsub");
+        SecretStore.init("secrets.json");
 
         ServiceLoader.init(injector);
         ServiceLoader.registerServices(List.of(Hello.class));
         ServiceLoader.registerSubscribers("pubsub");
 
-        var proxy = ClassServiceProxy.create(Hello.class);
+        var proxy = ServiceProxy.create(Hello.class);
         var res = proxy.hello(HelloRequest.newBuilder().setText("New proxy!").setOtherText("Other").build());
         System.out.println("Res " + res.result.getText());
 
