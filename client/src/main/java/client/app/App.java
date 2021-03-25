@@ -20,10 +20,10 @@ public class App {
         SecretStore.init("secretstore");
 
         var caller = new ServiceCaller();
-        // var call = caller.call();
-        var pub = caller.publish();
+        var call = caller.call();
+        // var pub = caller.publish();
 
         // System.out.println("Total for call: " + call + " ms");
-        System.out.println("Total for pub: " + pub + " ms");
+        // System.out.println("Total for pub: " + pub + " ms");
     }
 }

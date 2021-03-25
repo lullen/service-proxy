@@ -33,7 +33,11 @@ public class ServiceProxy implements InvocationHandler {
         packageName = packageName.substring(0, packageName.lastIndexOf("."));
         var methodName = method.getDeclaringClass().getSimpleName() + "." + method.getName();
 
-        var res = sp.invoke(packageName, methodName, (Message) args[0], method.getReturnType());
+        var types = method.getGenericParameterTypes();
+        if (types.length != 1) {
+            throw new Exception("Only one generic parameter type is allowed");
+        }
+        var res = sp.invoke(packageName, methodName, (Message) args[0], (Class<?>)types[0]);
         return res;
     }
 

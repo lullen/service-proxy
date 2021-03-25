@@ -18,7 +18,7 @@ public class ServiceCaller {
         var count = 0;
         var start = System.currentTimeMillis();
         var sp = ServiceProxy.create(Hello.class);
-        while (count < 6) {
+        while (count < 1) {
             var request = HelloRequest.newBuilder().setText("Hello there from call #" + count++ + "!")
                     .setNewText("What's up?").setOtherText("Alright").build();
             _logger.info(request.getText() + " " + request.getNewText());

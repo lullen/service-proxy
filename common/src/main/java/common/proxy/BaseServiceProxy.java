@@ -78,6 +78,7 @@ public class BaseServiceProxy implements IServiceProxy {
 
             try (DaprClient client = new DaprClientBuilder().build()) {
                 try {
+                    System.out.println("Resp class: " + responseClass.getSimpleName());
                     var resp = client.invokeMethod(appId, method, request, HttpExtension.NONE, responseClass).block();
                     methodResult = new Response<T>(resp);
                 } catch (DaprException exception) {

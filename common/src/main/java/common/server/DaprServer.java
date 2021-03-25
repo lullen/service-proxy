@@ -87,6 +87,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
             var refClass = ServiceLoader.create(request.getMethod());
             var invokeMethod = ServiceLoader.getMethod(request.getMethod(), refClass.getClass());
             var innerRequest = getRequest(invokeMethod, request.getData().getValue());
+            System.out.println(innerRequest.getClass().getSimpleName());
 
             var response = (Response<Message>) invokeMethod.invoke(refClass, innerRequest);
 
