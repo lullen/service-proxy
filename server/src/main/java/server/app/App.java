@@ -14,7 +14,7 @@ import server.interfaces.Hello;
 public class App {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        Configurator.setRootLevel(Level.DEBUG);
+        Configurator.setRootLevel(Level.INFO);
 
         var injector = Guice.createInjector(new DaprModule());
 

@@ -6,7 +6,7 @@ public class EventPublisher {
     private static Boolean _initialized = false;
 
     public static void init(String pubsubName) {
-        
+         BaseServiceProxy.initPubSub(pubsubName);
         _initialized = true;
     }
 

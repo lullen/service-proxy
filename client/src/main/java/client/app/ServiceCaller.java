@@ -36,7 +36,7 @@ public class ServiceCaller {
         var start = System.currentTimeMillis();
 
         while (count < 1) {
-            var request = HelloRequest.newBuilder().setText("Hello there from publish #" + count++ + "!")
+            var request = HelloRequest.newBuilder().setText("Hello there from publish 5#" + count++ + "!")
                     .setNewText("What's up?").setOtherText("Alright").build();
 
             _logger.info(request.getText() + " " + request.getNewText());

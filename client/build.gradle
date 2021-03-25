@@ -9,6 +9,8 @@ plugins {
 }
 
 dependencies {
+    implementation 'io.dapr:dapr-sdk:1.0.0'
+
     compile project(':proto')
     compile project(':common')
     compile project(':server')

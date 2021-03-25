@@ -12,6 +12,7 @@ public class ServiceProxy implements InvocationHandler {
         BaseServiceProxy.initProxy(type, injector);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T create(Class<T> clazz) {
 
         var classLoader = ServiceProxy.class.getClassLoader();
