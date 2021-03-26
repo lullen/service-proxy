@@ -1,4 +1,4 @@
-package server.service;
+package accessone.service;
 
 import java.util.Date;
 
@@ -11,8 +11,7 @@ import org.apache.logging.log4j.Logger;
 import common.model.Error;
 import common.model.Response;
 import common.model.StatusCode;
-import common.proxy.ServiceProxy;
-import server.interfaces.Hello;
+import accessone.interfaces.Hello;
 
 public class HelloServiceImpl implements Hello {
     private static final Logger _logger = LogManager.getLogger(HelloServiceImpl.class);
@@ -28,14 +27,6 @@ public class HelloServiceImpl implements Hello {
             res.result = response;
             return res;
         }
-
-        var sp = ServiceProxy.create(accesstwo.interfaces.Hello.class);
-        var res2 = sp.hello(request);
-
-        if (res2.result != null) {
-            System.out.println(res2.result.getText());
-        }
-
         return new Response<HelloResponse>(response);
     }
 

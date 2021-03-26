@@ -18,13 +18,19 @@ public class ServiceCaller {
         var count = 0;
         var start = System.currentTimeMillis();
         var sp = ServiceProxy.create(Hello.class);
-        while (count < 1) {
+        var sp2 = ServiceProxy.create(accessone.interfaces.Hello.class);
+
+        while (count < 10) {
             var request = HelloRequest.newBuilder().setText("Hello there from call #" + count++ + "!")
                     .setNewText("What's up?").setOtherText("Alright").build();
             _logger.info(request.getText() + " " + request.getNewText());
 
             var resp = sp.hello(request);
             _logger.info("Response: " + resp.error.getError());
+
+            var resp2 = sp2.hello(request);
+            _logger.info("Response2: " + resp2.error.getError());
+
         }
         _logger.info("Total: {} ms", (System.currentTimeMillis() - start));
         return System.currentTimeMillis() - start;

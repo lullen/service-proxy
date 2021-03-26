@@ -18,6 +18,7 @@ dependencies {
 
     compile project(':proto')
     compile project(':common')
+    compile project(':accesstwo')
 }
 
 application {

@@ -23,7 +23,7 @@ public class App {
         var call = caller.call();
         // var pub = caller.publish();
 
-        // System.out.println("Total for call: " + call + " ms");
+        System.out.println("Total for call: " + call + " ms");
         // System.out.println("Total for pub: " + pub + " ms");
     }
 }
