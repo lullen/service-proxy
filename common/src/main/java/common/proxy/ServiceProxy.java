@@ -8,9 +8,15 @@ import java.lang.reflect.Proxy;
 import com.google.inject.Injector;
 import com.google.protobuf.Message;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
+
+
+@Service
 public class ServiceProxy implements InvocationHandler {
-    public static void init(ProxyType type, Injector injector) {
-        BaseServiceProxy.initProxy(type, injector);
+    public static void init(ProxyType type, Injector injector, ApplicationContext ctx) {
+        BaseServiceProxy.initProxy(type, injector, ctx);
     }
 
     @SuppressWarnings("unchecked")

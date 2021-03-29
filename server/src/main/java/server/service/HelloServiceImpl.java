@@ -7,6 +7,7 @@ import com.test.proto.HelloResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import common.model.Error;
 import common.model.Response;
@@ -14,6 +15,7 @@ import common.model.StatusCode;
 import common.proxy.ServiceProxy;
 import server.interfaces.Hello;
 
+@Service
 public class HelloServiceImpl implements Hello {
     private static final Logger _logger = LogManager.getLogger(HelloServiceImpl.class);
 

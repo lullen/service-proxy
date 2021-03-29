@@ -5,10 +5,16 @@
 plugins {
     id 'poc.java-library-conventions'
     id 'poc.java-application-conventions'
+
+    id 'org.springframework.boot' version '2.4.4'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
+
+// sourceCompatibility = '1.8'
 
 dependencies {
     implementation 'com.google.inject:guice:5.0.1'
     implementation 'com.google.protobuf:protobuf-java-util:3.9.1'
 
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 }

@@ -12,7 +12,9 @@ import common.model.Error;
 import common.model.Response;
 import common.model.StatusCode;
 import accessone.interfaces.Hello;
+import org.springframework.stereotype.Service;
 
+@Service
 public class HelloServiceImpl implements Hello {
     private static final Logger _logger = LogManager.getLogger(HelloServiceImpl.class);
 

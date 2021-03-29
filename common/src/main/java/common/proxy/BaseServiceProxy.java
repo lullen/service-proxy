@@ -15,6 +15,8 @@ import io.grpc.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
 
 import common.helpers.ServiceLoader;
 import common.model.Error;
@@ -27,10 +29,10 @@ import io.dapr.client.domain.HttpExtension;
 import io.dapr.exceptions.DaprException;
 import io.dapr.serializer.DefaultObjectSerializer;
 
+@Service
 public class BaseServiceProxy implements IServiceProxy {
     private static final Logger _logger = LogManager.getLogger(BaseServiceProxy.class);
     private static ProxySettings _settings = new ProxySettings();
-    private static Injector _injector;
     private List<ProxyMiddleware> _middlewares = new ArrayList<ProxyMiddleware>();
 
     @Inject
@@ -39,13 +41,13 @@ public class BaseServiceProxy implements IServiceProxy {
     }
 
     public static BaseServiceProxy create() {
-        var inst = _injector.getInstance(BaseServiceProxy.class);
-        return inst;
+        return (BaseServiceProxy)ServiceLoader.create(BaseServiceProxy.class);
     }
 
-    public static void initProxy(ProxyType type, Injector injector) {
+    public static void initProxy(ProxyType type, Injector injector, ApplicationContext ctx) {
         _settings.type = type;
-        _injector = injector;
+        System.out.println("Spring injector not set");
+        ServiceLoader.init(injector, ctx);
     }
 
     public static void initPubSub(String pubsubName) {

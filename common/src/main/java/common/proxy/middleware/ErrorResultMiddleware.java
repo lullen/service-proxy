@@ -4,9 +4,11 @@ import com.google.protobuf.Message;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import common.model.Response;
 
+@Service
 public class ErrorResultMiddleware extends ProxyMiddleware {
     private static final Logger _logger = LogManager.getLogger(ErrorResultMiddleware.class);
 

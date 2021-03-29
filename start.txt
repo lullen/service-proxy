@@ -1,6 +1,7 @@
 
 ### Client
 dapr run --app-id client --app-protocol grpc --components-path ./components gradle run
+dapr run --app-id client --app-protocol grpc --components-path ./components gradle bootRun
 
 ### Server
 dapr run --app-id server --app-port 5000 --app-protocol grpc --components-path ./components gradle run

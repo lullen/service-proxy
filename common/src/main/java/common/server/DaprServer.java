@@ -22,17 +22,20 @@ import com.google.protobuf.Message;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
 
 import common.helpers.ServiceLoader;
 import common.model.Response;
 import common.model.StatusCode;
 
+@Service
 public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
     private static final Logger _logger = LogManager.getLogger(DaprServer.class);
 
     @Inject
-    DaprServer(Injector injector) {
-        ServiceLoader.init(injector);
+    DaprServer(Injector injector, ApplicationContext ctx) {
+        ServiceLoader.init(injector, ctx);
     }
 
     private Server server;

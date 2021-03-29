@@ -9,26 +9,41 @@ import com.google.inject.Injector;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 import common.pubsub.Subscriber;
 import common.pubsub.Subscription;
 import common.server.ExposedService;
 
 public class ServiceLoader {
+    private static String type = "spring";
+
     private static final Logger _logger = LogManager.getLogger(ServiceLoader.class);
     private static Map<String, Class<?>> _services = new HashMap<String, Class<?>>();
     private static ArrayList<Subscription> _subscriptions = new ArrayList<Subscription>();
 
     private static Injector _injector;
 
-    public static void init(Injector injector) {
+    private static ApplicationContext ctx;
+
+    public static void init(Injector injector, ApplicationContext ctx) {
         _injector = injector;
+        ServiceLoader.ctx = ctx;
     }
 
     public static Object create(String method) throws Exception {
         var className = method.substring(0, method.lastIndexOf("."));
         var invokeClass = _services.get(className.toLowerCase());
-        return _injector.getInstance(invokeClass);
+        return create(invokeClass);
+    }
+
+    public static Object create(Class<?> clazz) {
+
+        if (type != "spring") {
+            return _injector.getInstance(clazz);
+        } else {
+            return ctx.getBean(clazz);
+        }
     }
 
     public static Method getMethod(String methodName, Class<?> invokeClass) throws Exception {
