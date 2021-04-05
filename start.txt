@@ -4,3 +4,10 @@ dapr run --app-id client --app-protocol grpc --components-path ./components grad
 
 ### Server
 dapr run --app-id server --app-port 5000 --app-protocol grpc --components-path ./components gradle run
+
+
+### AccessOne
+dapr run --app-id accessone --app-port 5001 --app-protocol grpc --components-path ./components gradle run
+
+### AccessTwo
+dapr run --app-id accesstwo --app-port 5002 --app-protocol grpc --components-path ./components gradle run

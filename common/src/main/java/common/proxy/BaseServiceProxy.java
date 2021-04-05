@@ -131,14 +131,14 @@ public class BaseServiceProxy implements IServiceProxy {
 
     private class InProxProxy implements IServiceProxy {
         @Override()
-        @SuppressWarnings("unchecked")
         public <T> Response<T> invoke(String appId, String method, Message request, Class<T> responseClass)
-                throws Exception {
+        throws Exception {
             runBefore(appId, method, request, responseClass);
-
+            
             var instance = ServiceLoader.create(method);
             var invokeMethod = ServiceLoader.getMethod(method, instance.getClass());
-
+            
+            @SuppressWarnings("unchecked")
             var response = (Response<T>) invokeMethod.invoke(instance, request);
 
             runAfter(appId, method, request, response);

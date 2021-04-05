@@ -29,14 +29,39 @@ public class HelloServiceImpl implements Hello {
             return res;
         }
 
-        var sp = ServiceProxy.create(accesstwo.interfaces.Hello.class);
-        var res2 = sp.hello(request);
+        var res = new Response<HelloResponse>(response);
+        var result = res.next(r -> {
+            _logger.info("running method 1");
+            return test();
+        }).next(r -> {
+            _logger.info("running method 2");
+            return test2("Hello there #" + r.result);
+        }).onError(error -> {
+            _logger.error("Error returned: " + error.getError());
+            return new Response<TestClass2>(error);
+        });
 
-        if (res2.result != null) {
-            System.out.println(res2.result.getText());
-        }
+
+        var sp = ServiceProxy.create(accesstwo.interfaces.Hello.class);
+        // var res2 = sp.hello(request);
+
+        // if (res2.result != null) {
+        // System.out.println(res2.result.getText());
+        // }
 
         return new Response<HelloResponse>(response);
     }
 
+    private Response<TestClass1> test() {
+        var t = new TestClass1();
+        t.number = 5;
+        // return new Response<TestClass1>(t);
+        return new Response<TestClass1>(new Error(StatusCode.AlreadyExists, "Already exists"));
+    }
+
+    private Response<TestClass2> test2(String hello) {
+        var t = new TestClass2();
+        t.hello = hello;
+        return new Response<TestClass2>(t);
+    }
 }

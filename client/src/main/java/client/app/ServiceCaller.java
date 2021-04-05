@@ -1,10 +1,12 @@
 package client.app;
 
 import com.test.proto.HelloRequest;
+import com.test.proto.HelloResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import common.model.Response;
 import common.proxy.EventPublisher;
 import common.proxy.SecretStore;
 import common.proxy.ServiceProxy;
@@ -20,12 +22,15 @@ public class ServiceCaller {
         var sp = ServiceProxy.create(Hello.class);
         var sp2 = ServiceProxy.create(accessone.interfaces.Hello.class);
 
-        while (count < 10) {
+        while (count < 6) {
             var request = HelloRequest.newBuilder().setText("Hello there from call #" + count++ + "!")
                     .setNewText("What's up?").setOtherText("Alright").build();
             _logger.info(request.getText() + " " + request.getNewText());
 
-            var resp = sp.hello(request);
+            var resp = sp.hello(request).next(res -> sp.hello(request)).onError(error -> {
+                _logger.error("!!!ERROR!!! - " + error.getError());
+                return new Response<HelloResponse>(HelloResponse.newBuilder().setText("Hello").build());
+            });
             _logger.info("Response: " + resp.error.getError());
 
             var resp2 = sp2.hello(request);

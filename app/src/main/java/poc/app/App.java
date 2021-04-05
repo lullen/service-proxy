@@ -35,10 +35,6 @@ public class App {
         ServiceLoader.registerServices(List.of(Hello.class));
         ServiceLoader.registerSubscribers("pubsub");
 
-        var proxy = ServiceProxy.create(Hello.class);
-        var res = proxy.hello(HelloRequest.newBuilder().setText("New proxy!").setOtherText("Other").build());
-        System.out.println("Res " + res.result.getText());
-
         var caller = new ServiceCaller();
         caller.call();
         caller.publish();
