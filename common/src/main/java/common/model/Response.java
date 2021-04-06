@@ -21,15 +21,17 @@ public class Response<T> {
         return error.hasError();
     }
 
-    public <TRes> Response<TRes> next(Function<Response<T>, Response<TRes>> request) {
+    public <TRes> Response<TRes> then(Function<Response<T>, Response<TRes>> request) {
         if (this.hasError()) {
             return new Response<>(this.error);
-        } else {
-            return request.apply(this);
         }
+        return request.apply(this);
     }
 
-    public <TRes> Response<TRes> onError(Function<Error, Response<TRes>> request) {
+    public Response<T> onError(Function<Error, Response<T>> request) {
+        if (!this.hasError()) {
+            return this;
+        }
         return request.apply(this.error);
     }
 }

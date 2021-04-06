@@ -11,6 +11,7 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.google.inject.Inject;
@@ -18,6 +19,7 @@ import com.google.inject.Injector;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 
 import org.apache.logging.log4j.LogManager;
@@ -87,7 +89,6 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
             var refClass = ServiceLoader.create(request.getMethod());
             var invokeMethod = ServiceLoader.getMethod(request.getMethod(), refClass.getClass());
             var innerRequest = getRequest(invokeMethod, request.getData().getValue());
-            System.out.println(innerRequest.getClass().getSimpleName());
 
             var response = (Response<Message>) invokeMethod.invoke(refClass, innerRequest);
 
@@ -155,17 +156,8 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
             var refClass = ServiceLoader.create(subscription.method);
             var invokeMethod = ServiceLoader.getMethod(subscription.method, refClass.getClass());
 
-            var returnType = invokeMethod.getParameterTypes()[0];
+            var event = getEventFromRequest(request, invokeMethod);
 
-            var a = returnType.getMethod("newBuilder");
-            var builder = (Message.Builder) a.invoke(null);
-
-            var json = new DefaultObjectSerializer().deserialize(request.getData().toByteArray(), String.class);
-            com.google.protobuf.util.JsonFormat.parser().merge(json, builder);
-
-            var event = builder.build();
-
-            // If response is a response wrapper, check status and set status accordingly.
             var response = (Response<?>) invokeMethod.invoke(refClass, event);
 
             var status = TopicEventResponseStatus.SUCCESS;
@@ -179,6 +171,19 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
             e.printStackTrace();
             responseObserver.onError(e);
         }
+    }
+
+    private Object getEventFromRequest(TopicEventRequest request, Method invokeMethod) throws Exception {
+        var returnType = invokeMethod.getParameterTypes()[0];
+
+        var builderMethod = returnType.getMethod("newBuilder");
+        var builder = (Message.Builder) builderMethod.invoke(null);
+
+        var json = new DefaultObjectSerializer().deserialize(request.getData().toByteArray(), String.class);
+        com.google.protobuf.util.JsonFormat.parser().merge(json, builder);
+
+        var event = builder.build();
+        return event;
     }
 
     private Object getRequest(Method method, ByteString request) throws Exception {

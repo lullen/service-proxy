@@ -30,10 +30,10 @@ public class HelloServiceImpl implements Hello {
         }
 
         var res = new Response<HelloResponse>(response);
-        var result = res.next(r -> {
+        var result = res.then(r -> {
             _logger.info("running method 1");
             return test();
-        }).next(r -> {
+        }).then(r -> {
             _logger.info("running method 2");
             return test2("Hello there #" + r.result);
         }).onError(error -> {

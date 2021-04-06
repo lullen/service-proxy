@@ -23,11 +23,12 @@ public class ServiceCaller {
         var sp2 = ServiceProxy.create(accessone.interfaces.Hello.class);
 
         while (count < 6) {
+            _logger.info("-------------------------------");
             var request = HelloRequest.newBuilder().setText("Hello there from call #" + count++ + "!")
                     .setNewText("What's up?").setOtherText("Alright").build();
             _logger.info(request.getText() + " " + request.getNewText());
 
-            var resp = sp.hello(request).next(res -> sp.hello(request)).onError(error -> {
+            var resp = sp.hello(request).then(res -> sp.hello(request)).onError(error -> {
                 _logger.error("!!!ERROR!!! - " + error.getError());
                 return new Response<HelloResponse>(HelloResponse.newBuilder().setText("Hello").build());
             });
