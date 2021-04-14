@@ -4,10 +4,7 @@
 package poc.app;
 
 import java.util.List;
-
-import com.test.proto.HelloRequest;
 import com.google.inject.Guice;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 

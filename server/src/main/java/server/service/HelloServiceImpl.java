@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import common.model.Error;
 import common.model.Response;
 import common.model.StatusCode;
-import common.proxy.ServiceProxy;
+// import common.proxy.ServiceProxy;
 import server.interfaces.Hello;
 
 public class HelloServiceImpl implements Hello {
@@ -40,9 +40,11 @@ public class HelloServiceImpl implements Hello {
             _logger.error("Error returned: " + error.getError());
             return new Response<TestClass2>(error);
         });
+        _logger.info(result.hasError().toString());
 
-
-        var sp = ServiceProxy.create(accesstwo.interfaces.Hello.class);
+        // var sp = ServiceProxy.create(accesstwo.interfaces.Hello.class);
+        // // TODO: This fails because it tried to call 
+        // // com.sun.proxy.$Proxy17.hello(Unknown Source)
         // var res2 = sp.hello(request);
 
         // if (res2.result != null) {
