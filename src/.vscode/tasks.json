@@ -1,0 +1,34 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"appId": "server",
+			"appPort": 5000,
+			"label": "daprd-debug-server",
+			"type": "daprd",
+			"metricsPort": 9091,
+			"appProtocol": "grpc",
+			"componentsPath": "./server/components"
+		},
+		{
+			"appId": "server",
+			"label": "daprd-down-server",
+			"type": "daprd-down"
+		},
+		{
+			"appId": "client",
+			"label": "daprd-debug-client",
+			"type": "daprd",
+			"appProtocol": "grpc",
+			"grpcPort": 50003,
+			"httpPort": 3503,
+			"metricsPort": 9093,
+			"componentsPath": "./client/components"
+		},
+		{
+			"appId": "client",
+			"label": "daprd-down-client",
+			"type": "daprd-down"
+		}
+	]
+}
