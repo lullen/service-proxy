@@ -8,11 +8,11 @@ import com.test.proto.HelloResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import accessone.interfaces.Hello;
+import accessone.interfaces.HelloOne;
 import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
 
-public class HelloServiceImpl implements Hello {
+public class HelloServiceImpl implements HelloOne {
     private static final Logger _logger = LogManager.getLogger(HelloServiceImpl.class);
 
     @Override

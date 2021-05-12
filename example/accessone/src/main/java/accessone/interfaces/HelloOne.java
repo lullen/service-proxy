@@ -1,4 +1,4 @@
-package accesstwo.interfaces;
+package accessone.interfaces;
 
 import com.test.proto.HelloResponse;
 
@@ -8,6 +8,6 @@ import serviceproxy.server.ExposedService;
 import com.test.proto.HelloRequest;
 
 @ExposedService
-public interface Hello {
+public interface HelloOne {
     Response<HelloResponse> hello(HelloRequest request);
 }

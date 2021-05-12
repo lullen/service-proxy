@@ -10,7 +10,7 @@ import serviceproxy.model.Response;
 import serviceproxy.proxy.EventPublisher;
 import serviceproxy.proxy.SecretStore;
 import serviceproxy.proxy.ServiceProxy;
-import server.interfaces.Hello;
+import server.interfaces.HelloServer;
 
 public class ServiceCaller {
     private static final Logger _logger = LogManager.getLogger(ServiceCaller.class);
@@ -19,12 +19,12 @@ public class ServiceCaller {
         _logger.info("Howdy from call");
         var count = 0;
         var start = System.currentTimeMillis();
-        var sp = ServiceProxy.create(Hello.class);
-        var sp2 = ServiceProxy.create(accessone.interfaces.Hello.class);
+        var sp = ServiceProxy.create(HelloServer.class);
+        var sp2 = ServiceProxy.create(accessone.interfaces.HelloOne.class);
 
         while (count < 6) {
             _logger.info("-------------------------------");
-            var request = HelloRequest.newBuilder().setText("Hello there from call #" + count++ + "!")
+            var request = HelloRequest.newBuilder().setText("!Hello there from call #" + count++ + "!")
                     .setNewText("What's up?").setOtherText("Alright").build();
             _logger.info(request.getText() + " " + request.getNewText());
 

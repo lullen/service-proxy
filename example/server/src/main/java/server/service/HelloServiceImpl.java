@@ -11,10 +11,10 @@ import org.apache.logging.log4j.Logger;
 import serviceproxy.model.Error;
 import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
-// import serviceproxy.proxy.ServiceProxy;
-import server.interfaces.Hello;
+import serviceproxy.proxy.ServiceProxy;
+import server.interfaces.HelloServer;
 
-public class HelloServiceImpl implements Hello {
+public class HelloServiceImpl implements HelloServer {
     private static final Logger _logger = LogManager.getLogger(HelloServiceImpl.class);
 
     @Override
@@ -42,14 +42,12 @@ public class HelloServiceImpl implements Hello {
         });
         _logger.info(result.hasError().toString());
 
-        // var sp = ServiceProxy.create(accesstwo.interfaces.Hello.class);
-        // // TODO: This fails because it tried to call 
-        // // com.sun.proxy.$Proxy17.hello(Unknown Source)
-        // var res2 = sp.hello(request);
+        var sp = ServiceProxy.create(accesstwo.interfaces.HelloTwo.class);
+        var res2 = sp.hello(request);
 
-        // if (res2.result != null) {
-        // System.out.println(res2.result.getText());
-        // }
+        if (res2.result != null) {
+            System.out.println(res2.result.getText());
+        }
 
         return new Response<HelloResponse>(response);
     }

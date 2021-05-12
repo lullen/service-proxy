@@ -8,6 +8,10 @@ import com.google.inject.Guice;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import accessone.app.AccessOneModule;
+import accessone.interfaces.HelloOne;
+import accesstwo.app.AccessTwoModule;
+import accesstwo.interfaces.HelloTwo;
 import client.app.ServiceCaller;
 import serviceproxy.helpers.ServiceLoader;
 import serviceproxy.proxy.ServiceProxy;
@@ -16,20 +20,21 @@ import serviceproxy.proxy.SecretStore;
 import serviceproxy.proxy.EventPublisher;
 import serviceproxy.proxy.ProxyModule;
 import server.app.DaprModule;
-import server.interfaces.Hello;
+import server.interfaces.HelloServer;
 
 public class App {
     public static void main(String[] args) throws Exception {
         Configurator.setRootLevel(Level.DEBUG);
 
-        var injector = Guice.createInjector(new ProxyModule(), new DaprModule());
+        var injector = Guice.createInjector(new ProxyModule(), new DaprModule(), new AccessOneModule(),
+                new AccessTwoModule());
 
         ServiceProxy.init(ProxyType.InProc, injector);
         EventPublisher.init("pubsub");
         SecretStore.init("secrets.json");
 
         ServiceLoader.init(injector);
-        ServiceLoader.registerServices(List.of(Hello.class));
+        ServiceLoader.registerServices(List.of(HelloServer.class, HelloOne.class, HelloTwo.class));
         ServiceLoader.registerSubscribers("pubsub");
 
         var caller = new ServiceCaller();

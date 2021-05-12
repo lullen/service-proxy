@@ -19,11 +19,14 @@ repositories {
     }
 }
 
+sourceCompatibility = JavaVersion.VERSION_15
+targetCompatibility = JavaVersion.VERSION_15
+
 dependencies {
 
     implementation 'io.dapr:dapr-sdk:1.0.0'
     implementation 'org.apache.commons:commons-text'
-    implementation 'com.ludwigarch:serviceproxy:0.1'
+    implementation 'com.ludwigarch:serviceproxy:0.2'
 
     compile project(':client')
     compile project(':server')

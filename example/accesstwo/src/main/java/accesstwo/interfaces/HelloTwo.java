@@ -1,16 +1,13 @@
-package server.interfaces;
+package accesstwo.interfaces;
 
 import com.test.proto.HelloResponse;
 
 import serviceproxy.model.Response;
-import serviceproxy.pubsub.Subscriber;
 import serviceproxy.server.ExposedService;
 
 import com.test.proto.HelloRequest;
 
 @ExposedService
-public interface Hello {
-
-    @Subscriber(topic = "hello")
+public interface HelloTwo {
     Response<HelloResponse> hello(HelloRequest request);
 }

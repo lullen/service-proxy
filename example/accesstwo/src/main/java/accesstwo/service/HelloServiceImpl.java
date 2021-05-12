@@ -11,9 +11,9 @@ import org.apache.logging.log4j.Logger;
 import serviceproxy.model.Error;
 import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
-import accesstwo.interfaces.Hello;
+import accesstwo.interfaces.HelloTwo;
 
-public class HelloServiceImpl implements Hello {
+public class HelloServiceImpl implements HelloTwo {
     private static final Logger _logger = LogManager.getLogger(HelloServiceImpl.class);
 
     @Override

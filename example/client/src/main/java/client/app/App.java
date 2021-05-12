@@ -10,20 +10,21 @@ import serviceproxy.proxy.ProxyModule;
 import serviceproxy.proxy.ProxyType;
 import serviceproxy.proxy.ServiceProxy;
 import serviceproxy.proxy.SecretStore;
+import serviceproxy.proxy.ServerModule;
 
 public class App {
     public static void main(String[] args) throws Exception {
         Configurator.setRootLevel(Level.INFO);
-        var injector = Guice.createInjector(new ProxyModule());
+        var injector = Guice.createInjector(new ProxyModule(), new ServerModule());
         ServiceProxy.init(ProxyType.Dapr, injector);
         EventPublisher.init("pubsub");
         SecretStore.init("secretstore");
 
         var caller = new ServiceCaller();
         var call = caller.call();
-        // var pub = caller.publish();
+        var pub = caller.publish();
 
         System.out.println("Total for call: " + call + " ms");
-        // System.out.println("Total for pub: " + pub + " ms");
+        System.out.println("Total for pub: " + pub + " ms");
     }
 }

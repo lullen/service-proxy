@@ -17,7 +17,7 @@ dependencies {
 
     implementation 'io.dapr:dapr-sdk:1.0.0'
 
-    implementation 'com.ludwigarch:serviceproxy:0.1'
+    implementation 'com.ludwigarch:serviceproxy:0.2'
 
     // compile project(':common')
     compile project(':proto')
