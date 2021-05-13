@@ -1,7 +1,6 @@
-package serviceproxy.proxy;
+package serviceproxy.server;
 
 import com.google.inject.AbstractModule;
-import serviceproxy.server.DaprServer;
 
 public class ServerModule extends AbstractModule {
 

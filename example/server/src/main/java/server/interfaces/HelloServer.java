@@ -11,6 +11,6 @@ import com.test.proto.HelloRequest;
 @ExposedService
 public interface HelloServer {
 
-    @Subscriber(topic = "hello")
+    @Subscriber(name = "pubsub", topic = "hello")
     Response<HelloResponse> hello(HelloRequest request);
 }

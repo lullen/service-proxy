@@ -70,7 +70,7 @@ public class ServiceLoader {
         return _subscriptions;
     }
 
-    public static void registerSubscribers(String pubsub) {
+    public static void registerSubscribers() {
         ServiceLoader.getServices().forEach((k, clazz) -> {
             for (var method : clazz.getMethods()) {
                 var subscriber = method.getAnnotation(Subscriber.class);
@@ -78,7 +78,7 @@ public class ServiceLoader {
                     var s = new Subscription();
                     s.method = clazz.getSimpleName() + "." + method.getName();
                     s.topic = subscriber.topic();
-                    s.pubsub = pubsub;
+                    s.pubsub = subscriber.name();
                     _logger.info("Registering {} on {}", s.topic, s.method);
                     _subscriptions.add(s);
                 }

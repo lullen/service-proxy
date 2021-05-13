@@ -30,12 +30,11 @@ public class App {
                 new AccessTwoModule());
 
         ServiceProxy.init(ProxyType.InProc, injector);
-        EventPublisher.init("pubsub");
         SecretStore.init("secrets.json");
 
         ServiceLoader.init(injector);
         ServiceLoader.registerServices(List.of(HelloServer.class, HelloOne.class, HelloTwo.class));
-        ServiceLoader.registerSubscribers("pubsub");
+        ServiceLoader.registerSubscribers();
 
         var caller = new ServiceCaller();
         caller.call();

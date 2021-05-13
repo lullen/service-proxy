@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3cbf05e8-7618-4049-b7e4-c0c75217048c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../src/.project" beforeDir="false" afterPath="$PROJECT_DIR$/../src/.project" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/.settings/org.eclipse.buildship.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/../src/.settings/org.eclipse.buildship.core.prefs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/lib/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/../src/lib/.classpath" afterDir="false" />
-    </list>
+    <list default="true" id="3cbf05e8-7618-4049-b7e4-c0c75217048c" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -216,12 +212,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/poc/app/App.java</url>
-          <line>34</line>
+          <line>39</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/poc/app/App.java</url>
-          <line>30</line>
+          <line>35</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>

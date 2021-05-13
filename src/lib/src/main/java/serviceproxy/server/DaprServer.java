@@ -127,8 +127,12 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
     public void listTopicSubscriptions(Empty request, StreamObserver<ListTopicSubscriptionsResponse> responseObserver) {
         var listTopics = ListTopicSubscriptionsResponse.newBuilder();
         for (var subscription : ServiceLoader.getSubscriptions()) {
-            listTopics.addSubscriptions(TopicSubscription.newBuilder().setPubsubName(subscription.pubsub)
-                    .setTopic(subscription.topic).build());
+            listTopics.addSubscriptions(
+                TopicSubscription
+                    .newBuilder()
+                    .setPubsubName(subscription.pubsub)
+                    .setTopic(subscription.topic).build()
+            );
         }
         _logger.info("Listing {} topics.", listTopics.getSubscriptionsCount());
         var response = listTopics.build();
@@ -141,8 +145,8 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
         return this;
     }
 
-    public DaprServer registerSubscribers(String pubsub) {
-        ServiceLoader.registerSubscribers(pubsub);
+    public DaprServer registerSubscribers() {
+        ServiceLoader.registerSubscribers();
         return this;
     }
 

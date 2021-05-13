@@ -8,7 +8,7 @@ import com.google.inject.Guice;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
-import serviceproxy.proxy.ServerModule;
+import serviceproxy.server.ServerModule;
 import serviceproxy.server.DaprServer;
 import accesstwo.interfaces.HelloTwo;
 
@@ -20,8 +20,8 @@ public class App {
         var injector = Guice.createInjector(new AccessTwoModule(), new ServerModule());
 
         final var service = injector.getInstance(DaprServer.class);
-        service.start(5002);
         service.registerServices(List.of(HelloTwo.class));
+        service.start(5002);
         service.awaitTermination();
     }
 }

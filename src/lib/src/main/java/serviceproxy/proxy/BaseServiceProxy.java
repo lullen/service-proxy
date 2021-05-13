@@ -48,10 +48,6 @@ public class BaseServiceProxy implements IServiceProxy {
         _injector = injector;
     }
 
-    public static void initPubSub(String pubsubName) {
-        _settings.pubsubName = pubsubName;
-    }
-
     public static void initSecrets(String secretStore) {
         _settings.secretStoreName = secretStore;
     }
@@ -112,12 +108,12 @@ public class BaseServiceProxy implements IServiceProxy {
         }
 
         @Override
-        public void publish(String topic, Message request) throws Exception {
+        public void publish(String pubsubName, String topic, Message request) throws Exception {
             var json = com.google.protobuf.util.JsonFormat.printer().print(request);
             var serializedRequest = new DefaultObjectSerializer().serialize(json);
 
             try (DaprClient client = new DaprClientBuilder().build()) {
-                client.publishEvent(_settings.pubsubName, topic, serializedRequest).block();
+                client.publishEvent(pubsubName, topic, serializedRequest).block();
             }
         }
 
@@ -146,12 +142,12 @@ public class BaseServiceProxy implements IServiceProxy {
         }
 
         @Override
-        public void publish(String topic, Message request) throws Exception {
-            if (_settings.pubsubName == "") {
+        public void publish(String pubsubName, String topic, Message request) throws Exception {
+            if (pubsubName == "") {
                 throw new Exception("Property pubsubName is not set");
             }
 
-            _logger.info("InProc: Published event to topic {} on {}", topic, _settings.pubsubName);
+            _logger.info("InProc: Published event to topic {} on {}", topic, pubsubName);
 
             var subscription = ServiceLoader.getSubscriptions().stream().filter(s -> s.topic.equals(topic)).findFirst();
             if (subscription.isPresent()) {
@@ -199,11 +195,11 @@ public class BaseServiceProxy implements IServiceProxy {
     }
 
     @Override
-    public void publish(String topic, Message request) throws Exception {
+    public void publish(String pubsubName, String topic, Message request) throws Exception {
         if (_settings.type == ProxyType.Dapr) {
-            new DaprProxy().publish(topic, request);
+            new DaprProxy().publish(pubsubName, topic, request);
         } else {
-            new InProxProxy().publish(topic, request);
+            new InProxProxy().publish(pubsubName, topic, request);
         }
     }
 

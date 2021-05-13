@@ -1,7 +1,6 @@
 package server.app;
 
 import com.google.inject.AbstractModule;
-import serviceproxy.server.DaprServer;
 import server.interfaces.HelloServer;
 import server.service.HelloServiceImpl;
 

@@ -6,6 +6,7 @@ import com.test.proto.HelloResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import accessone.interfaces.HelloOne;
 import serviceproxy.model.Response;
 import serviceproxy.proxy.EventPublisher;
 import serviceproxy.proxy.SecretStore;
@@ -20,9 +21,9 @@ public class ServiceCaller {
         var count = 0;
         var start = System.currentTimeMillis();
         var sp = ServiceProxy.create(HelloServer.class);
-        var sp2 = ServiceProxy.create(accessone.interfaces.HelloOne.class);
+        var sp2 = ServiceProxy.create(HelloOne.class);
 
-        while (count < 6) {
+        while (count < 3) {
             _logger.info("-------------------------------");
             var request = HelloRequest.newBuilder().setText("!Hello there from call #" + count++ + "!")
                     .setNewText("What's up?").setOtherText("Alright").build();
@@ -51,11 +52,11 @@ public class ServiceCaller {
         var start = System.currentTimeMillis();
 
         while (count < 1) {
-            var request = HelloRequest.newBuilder().setText("Hello there from publish 5#" + count++ + "!")
+            var request = HelloRequest.newBuilder().setText("Hello there from publish #" + count++ + "!")
                     .setNewText("What's up?").setOtherText("Alright").build();
 
             _logger.info(request.getText() + " " + request.getNewText());
-            EventPublisher.publish("hello", request);
+            EventPublisher.publish(PubSub.Default, "hello", request);
 
         }
         _logger.info("Total: " + (System.currentTimeMillis() - start) + " ms");
