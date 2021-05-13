@@ -57,6 +57,7 @@ public class ServiceLoader {
     }
 
     public static void registerServices(Iterable<Class<?>> classes) {
+        
         for (var clazz : classes) {
             var exposedService = clazz.getAnnotation(ExposedService.class);
             if (exposedService != null) {
@@ -64,13 +65,15 @@ public class ServiceLoader {
             }
         }
         _logger.info("Registered {} services.", _services.size());
+
+        registerSubscribers();
     }
 
     public static ArrayList<Subscription> getSubscriptions() {
         return _subscriptions;
     }
 
-    public static void registerSubscribers() {
+    private static void registerSubscribers() {
         ServiceLoader.getServices().forEach((k, clazz) -> {
             for (var method : clazz.getMethods()) {
                 var subscriber = method.getAnnotation(Subscriber.class);

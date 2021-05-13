@@ -15,13 +15,13 @@ import accesstwo.interfaces.HelloTwo;
 import client.app.ServiceCaller;
 import serviceproxy.helpers.ServiceLoader;
 import serviceproxy.proxy.ServiceProxy;
+import serviceproxy.server.ExposedService;
 import serviceproxy.proxy.ProxyType;
-import serviceproxy.proxy.SecretStore;
-import serviceproxy.proxy.EventPublisher;
 import serviceproxy.proxy.ProxyModule;
 import server.app.DaprModule;
 import server.interfaces.HelloServer;
-
+import org.reflections.Reflections;
+import org.reflections.scanners.TypeAnnotationsScanner;
 public class App {
     public static void main(String[] args) throws Exception {
         Configurator.setRootLevel(Level.DEBUG);
@@ -30,11 +30,9 @@ public class App {
                 new AccessTwoModule());
 
         ServiceProxy.init(ProxyType.InProc, injector);
-        SecretStore.init("secrets.json");
 
         ServiceLoader.init(injector);
         ServiceLoader.registerServices(List.of(HelloServer.class, HelloOne.class, HelloTwo.class));
-        ServiceLoader.registerSubscribers();
 
         var caller = new ServiceCaller();
         caller.call();

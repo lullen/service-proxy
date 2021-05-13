@@ -8,5 +8,5 @@ public interface IServiceProxy {
 
     void publish(String pubsubName, String topic, Message request) throws Exception;
 
-    String getSecret(String key) throws Exception;
+    String getSecret(String secretStoreName, String key) throws Exception;
 }

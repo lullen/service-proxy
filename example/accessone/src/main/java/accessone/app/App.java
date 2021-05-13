@@ -21,7 +21,6 @@ public class App {
 
         final var service = injector.getInstance(DaprServer.class);
         service.registerServices(List.of(HelloOne.class));
-        service.registerSubscribers();
         service.start(5001);
         service.awaitTermination();
     }

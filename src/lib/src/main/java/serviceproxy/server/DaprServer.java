@@ -145,11 +145,6 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
         return this;
     }
 
-    public DaprServer registerSubscribers() {
-        ServiceLoader.registerSubscribers();
-        return this;
-    }
-
     @Override
     public void onTopicEvent(TopicEventRequest request, StreamObserver<TopicEventResponse> responseObserver) {
         try {

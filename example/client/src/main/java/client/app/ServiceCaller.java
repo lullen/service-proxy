@@ -8,8 +8,8 @@ import org.apache.logging.log4j.Logger;
 
 import accessone.interfaces.HelloOne;
 import serviceproxy.model.Response;
-import serviceproxy.proxy.EventPublisher;
-import serviceproxy.proxy.SecretStore;
+import serviceproxy.pubsub.EventPublisher;
+import serviceproxy.secret.SecretStore;
 import serviceproxy.proxy.ServiceProxy;
 import server.interfaces.HelloServer;
 
@@ -56,7 +56,7 @@ public class ServiceCaller {
                     .setNewText("What's up?").setOtherText("Alright").build();
 
             _logger.info(request.getText() + " " + request.getNewText());
-            EventPublisher.publish(PubSub.Default, "hello", request);
+            EventPublisher.publish(Constants.DefaultPubSub, "hello", request);
 
         }
         _logger.info("Total: " + (System.currentTimeMillis() - start) + " ms");
@@ -70,7 +70,7 @@ public class ServiceCaller {
 
         while (count < 1) {
             var secretNumber = count++ % 2 + 1;
-            var secret = SecretStore.get("secret" + secretNumber);
+            var secret = SecretStore.get(Constants.DefaultSecret, "secret" + secretNumber);
             _logger.info("Got secret value: " + secret);
         }
         _logger.info("Total: {} ms", (System.currentTimeMillis() - start));

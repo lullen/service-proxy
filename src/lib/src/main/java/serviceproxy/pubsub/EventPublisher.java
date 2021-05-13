@@ -1,6 +1,8 @@
-package serviceproxy.proxy;
+package serviceproxy.pubsub;
 
 import com.google.protobuf.Message;
+
+import serviceproxy.proxy.BaseServiceProxy;
 
 public class EventPublisher {
     public static void publish(String pubsubName, String topic, Message request) throws Exception {

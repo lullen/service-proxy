@@ -48,10 +48,6 @@ public class BaseServiceProxy implements IServiceProxy {
         _injector = injector;
     }
 
-    public static void initSecrets(String secretStore) {
-        _settings.secretStoreName = secretStore;
-    }
-
     private <T> void runBefore(String appId, String method, Message request, Class<T> responseClass) {
         for (var proxyMiddleware : _middlewares) {
             proxyMiddleware.before(appId, method, request, responseClass);
@@ -118,9 +114,9 @@ public class BaseServiceProxy implements IServiceProxy {
         }
 
         @Override
-        public String getSecret(String key) throws Exception {
+        public String getSecret(String secretStoreName, String key) throws Exception {
             try (var client = new DaprClientBuilder().build()) {
-                return client.getSecret(_settings.secretStoreName, key).block().get(key);
+                return client.getSecret(secretStoreName, key).block().get(key);
             }
         }
     }
@@ -167,14 +163,20 @@ public class BaseServiceProxy implements IServiceProxy {
         }
 
         @Override
-        public String getSecret(String key) throws Exception {
+        public String getSecret(String secretStoreName, String key) throws Exception {
             var map = new HashMap<String, String>();
             map.put(key, key + "-secret");
             var classLoader = getClass().getClassLoader();
 
-            var a = classLoader.getResource(_settings.secretStoreName).toURI();
-            var path = Paths.get(a);
-            String json = Files.readString(path);
+            String json;
+            try {
+                var a = classLoader.getResource(secretStoreName + ".json").toURI();
+                var path = Paths.get(a);
+                json = Files.readString(path);
+                
+            } catch (Exception e) {
+                throw new Exception("Could not open file " + secretStoreName + ".json", e);
+            }
 
             var gson = new Gson();
             var jsonObj = gson.fromJson(json, HashMap.class);
@@ -204,11 +206,11 @@ public class BaseServiceProxy implements IServiceProxy {
     }
 
     @Override
-    public String getSecret(String key) throws Exception {
+    public String getSecret(String secretStoreName, String key) throws Exception {
         if (_settings.type == ProxyType.Dapr) {
-            return new DaprProxy().getSecret(key);
+            return new DaprProxy().getSecret(secretStoreName, key);
         } else {
-            return new InProxProxy().getSecret(key);
+            return new InProxProxy().getSecret(secretStoreName, key);
         }
     }
 }
