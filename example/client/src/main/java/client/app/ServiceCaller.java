@@ -5,25 +5,36 @@ import com.test.proto.HelloResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
-import accessone.interfaces.HelloOne;
+import accessone.app.interfaces.HelloOne;
 import serviceproxy.model.Response;
 import serviceproxy.pubsub.EventPublisher;
 import serviceproxy.secret.SecretStore;
 import serviceproxy.proxy.ServiceProxy;
 import server.interfaces.HelloServer;
 
+@Component
 public class ServiceCaller {
     private static final Logger _logger = LogManager.getLogger(ServiceCaller.class);
+    private ServiceProxy serviceProxy;
+    private EventPublisher eventPublisher;
+    private SecretStore secretStore;
+
+    public ServiceCaller(ServiceProxy serviceProxy, EventPublisher eventPublisher, SecretStore secretStore) {
+        this.serviceProxy = serviceProxy;
+        this.eventPublisher = eventPublisher;
+        this.secretStore = secretStore;
+    }
 
     public long call() throws Exception {
         _logger.info("Howdy from call");
         var count = 0;
         var start = System.currentTimeMillis();
-        var sp = ServiceProxy.create(HelloServer.class);
-        var sp2 = ServiceProxy.create(HelloOne.class);
+        var sp = serviceProxy.create(HelloServer.class);
+        var sp2 = serviceProxy.create(HelloOne.class);
 
-        while (count < 3) {
+        while (count < 100) {
             _logger.info("-------------------------------");
             var request = HelloRequest.newBuilder().setText("!Hello there from call #" + count++ + "!")
                     .setNewText("What's up?").setOtherText("Alright").build();
@@ -51,12 +62,12 @@ public class ServiceCaller {
         var count = 0;
         var start = System.currentTimeMillis();
 
-        while (count < 1) {
+        while (count < 100) {
             var request = HelloRequest.newBuilder().setText("Hello there from publish #" + count++ + "!")
                     .setNewText("What's up?").setOtherText("Alright").build();
 
             _logger.info(request.getText() + " " + request.getNewText());
-            EventPublisher.publish(Constants.DefaultPubSub, "hello", request);
+            eventPublisher.publish(Constants.DefaultPubSub, "hello", request);
 
         }
         _logger.info("Total: " + (System.currentTimeMillis() - start) + " ms");
@@ -70,7 +81,7 @@ public class ServiceCaller {
 
         while (count < 1) {
             var secretNumber = count++ % 2 + 1;
-            var secret = SecretStore.get(Constants.DefaultSecret, "secret" + secretNumber);
+            var secret = secretStore.get(Constants.DefaultSecret, "secret" + secretNumber);
             _logger.info("Got secret value: " + secret);
         }
         _logger.info("Total: {} ms", (System.currentTimeMillis() - start));

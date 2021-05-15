@@ -29,8 +29,9 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     // implementation 'com.google.guava:guava:29.0-jre'
-    
-    implementation 'com.google.inject:guice:5.0.1'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.4.3'
+
+    // implementation 'com.google.inject:guice:5.0.1'
     implementation 'com.google.protobuf:protobuf-java-util:3.9.1'
         
     implementation 'io.dapr:dapr-sdk:1.0.0'
@@ -54,7 +55,7 @@ publishing {
         gpr(MavenPublication) {
             groupId = 'com.ludwigarch'
             artifactId = 'serviceproxy'
-            version = '0.15'
+            version = '0.20'
 
             from(components.java)
         }

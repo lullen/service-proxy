@@ -1,4 +1,4 @@
-package accesstwo.interfaces;
+package accesstwo.app.interfaces;
 
 import com.test.proto.HelloResponse;
 

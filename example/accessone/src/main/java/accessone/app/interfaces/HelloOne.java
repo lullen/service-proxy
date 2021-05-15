@@ -1,4 +1,4 @@
-package accessone.interfaces;
+package accessone.app.interfaces;
 
 import com.test.proto.HelloResponse;
 

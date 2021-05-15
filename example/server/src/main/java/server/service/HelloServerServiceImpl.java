@@ -7,6 +7,7 @@ import com.test.proto.HelloResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import serviceproxy.model.Error;
 import serviceproxy.model.Response;
@@ -14,8 +15,16 @@ import serviceproxy.model.StatusCode;
 import serviceproxy.proxy.ServiceProxy;
 import server.interfaces.HelloServer;
 
-public class HelloServiceImpl implements HelloServer {
-    private static final Logger _logger = LogManager.getLogger(HelloServiceImpl.class);
+@Component
+public class HelloServerServiceImpl implements HelloServer {
+
+    private ServiceProxy serviceProxy;
+
+    public HelloServerServiceImpl(ServiceProxy serviceProxy) {
+        this.serviceProxy = serviceProxy;
+    }
+
+    private static final Logger _logger = LogManager.getLogger(HelloServerServiceImpl.class);
 
     @Override
     public Response<HelloResponse> hello(HelloRequest request) {
@@ -43,7 +52,7 @@ public class HelloServiceImpl implements HelloServer {
         });
         _logger.info(result.hasError().toString());
 
-        var sp = ServiceProxy.create(accesstwo.interfaces.HelloTwo.class);
+        var sp = serviceProxy.create(accesstwo.app.interfaces.HelloTwo.class);
         var res2 = sp.hello(request);
         if (res2.result != null) {
             System.out.println(res2.result.getText());

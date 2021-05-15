@@ -11,17 +11,18 @@ plugins {
 }
 
 dependencies {
+    // implementation 'org.springframework.boot:spring-boot-starter-web:2.4.3'
     // implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation 'com.google.inject:guice:5.0.1'
+    // implementation 'com.google.inject:guice:5.0.1'
 
     implementation 'io.dapr:dapr-sdk:1.0.0'
-    implementation 'com.ludwigarch:serviceproxy:0.14'
+    implementation 'com.ludwigarch:serviceproxy:0.20'
 
     compile project(':proto')
 }
 
 application {
     // Define the main class for the application.
-    mainClass = 'accesstwo.app.App'
+    mainClass = 'accesstwo.app.Application'
 }
-mainClassName = 'accesstwo.app.App'
+mainClassName = 'accesstwo.app.Application'

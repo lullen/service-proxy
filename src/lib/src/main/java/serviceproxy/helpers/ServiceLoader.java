@@ -3,38 +3,41 @@ package serviceproxy.helpers;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-
-import com.google.inject.Injector;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import serviceproxy.pubsub.Subscriber;
 import serviceproxy.pubsub.Subscription;
 import serviceproxy.server.ExposedService;
 
+@Component
 public class ServiceLoader {
+    private ApplicationContext applicationContext;
+
     private static final Logger _logger = LogManager.getLogger(ServiceLoader.class);
     private static Map<String, Class<?>> _services = new HashMap<String, Class<?>>();
     private static ArrayList<Subscription> _subscriptions = new ArrayList<Subscription>();
 
-    private static Injector _injector;
-
-    public static void init(Injector injector) {
-        _injector = injector;
+    public ServiceLoader(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
-    public static Object create(String method) throws Exception {
+    public Object create(String method) throws Exception {
         var className = method.substring(0, method.lastIndexOf("."));
         var invokeClass = _services.get(className.toLowerCase());
         if (invokeClass == null) {
             return null;
         }
-        return _injector.getInstance(invokeClass);
+        return applicationContext.getAutowireCapableBeanFactory().getBean(invokeClass);
     }
 
-    public static Method getMethod(String methodName, Class<?> invokeClass) throws Exception {
+    public Method getMethod(String methodName, Class<?> invokeClass) throws Exception {
         Method invokeMethod = null;
 
         if (methodName.contains(".")) {
@@ -57,6 +60,21 @@ public class ServiceLoader {
 
     public static Map<String, Class<?>> getServices() {
         return _services;
+    }
+
+    public static void registerServices(ApplicationContext ctx) {
+        List<Class<?>> services = new LinkedList<Class<?>>();
+        var serviceDictionary = ctx.getBeansWithAnnotation(ExposedService.class);
+        serviceDictionary
+                .values()
+                .stream()
+                .map(b -> b.getClass())
+                .forEach(c -> {
+                    for (var clazz : c.getInterfaces()) {
+                        services.add(clazz);
+                    }
+            });
+        ServiceLoader.registerServices(services);
     }
 
     public static void registerServices(Iterable<Class<?>> classes) {

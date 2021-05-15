@@ -14,11 +14,10 @@ sourceCompatibility = JavaVersion.VERSION_15
 targetCompatibility = JavaVersion.VERSION_15
 
 dependencies {
-    // implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation 'com.google.inject:guice:5.0.1'
+    // implementation 'org.springframework.boot:spring-boot-starter-web:2.4.3'
 
     implementation 'io.dapr:dapr-sdk:1.0.0'
-    implementation 'com.ludwigarch:serviceproxy:0.14'
+    implementation 'com.ludwigarch:serviceproxy:0.20'
 
     compile project(':accesstwo')
     compile project(':proto')
@@ -26,6 +25,6 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'server.app.App'
+    mainClass = 'server.Application'
 }
-mainClassName = 'server.app.App'
+mainClassName = 'server.Application'

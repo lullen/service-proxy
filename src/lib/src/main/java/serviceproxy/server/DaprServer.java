@@ -12,9 +12,8 @@ import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
@@ -22,17 +21,20 @@ import com.google.protobuf.Message;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import serviceproxy.helpers.ServiceLoader;
 import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
 
+@Component
 public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
-    private static final Logger _logger = LogManager.getLogger(DaprServer.class);
+    private static final Logger logger = LogManager.getLogger(DaprServer.class);
+    private ServiceLoader serviceLoader;
 
-    @Inject
-    DaprServer(Injector injector) {
-        ServiceLoader.init(injector);
+    public DaprServer(ServiceLoader serviceLoader) {
+        this.serviceLoader = serviceLoader;
     }
 
     private Server server;
@@ -46,16 +48,16 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
     public DaprServer start(int port) throws IOException {
 
         this.server = ServerBuilder.forPort(port).addService(this).build().start();
-        _logger.info("Server: started listening on port %d\n", port);
+        logger.info("Server: started listening on port %d\n", port);
 
         // Now we handle ctrl+c (or any other JVM shutdown)
         Runtime.getRuntime().addShutdownHook(new Thread() {
 
             @Override
             public void run() {
-                _logger.info("Server: shutting down gracefully ...");
+                logger.info("Server: shutting down gracefully ...");
                 DaprServer.this.server.shutdown();
-                _logger.info("Server: Bye.");
+                logger.info("Server: Bye.");
             }
         });
         return this;
@@ -72,6 +74,12 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
         }
     }
 
+    public void shutdown() throws InterruptedException {
+        if (this.server != null) {
+            this.server.shutdown().awaitTermination(5, TimeUnit.SECONDS);
+        }
+    }
+
     /**
      * Server mode: this is the Dapr method to receive Invoke operations via Grpc.
      * It will create an instance of the class that should be called and call it.
@@ -84,8 +92,8 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
     public void onInvoke(CommonProtos.InvokeRequest request,
             StreamObserver<CommonProtos.InvokeResponse> responseObserver) {
         try {
-            var refClass = ServiceLoader.create(request.getMethod());
-            var invokeMethod = ServiceLoader.getMethod(request.getMethod(), refClass.getClass());
+            var refClass = serviceLoader.create(request.getMethod());
+            var invokeMethod = serviceLoader.getMethod(request.getMethod(), refClass.getClass());
             var innerRequest = getRequest(invokeMethod, request.getData().getValue());
 
             var response = (Response<Message>) invokeMethod.invoke(refClass, innerRequest);
@@ -134,10 +142,15 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
                     .setTopic(subscription.topic).build()
             );
         }
-        _logger.info("Listing {} topics.", listTopics.getSubscriptionsCount());
+        logger.info("Listing {} topics.", listTopics.getSubscriptionsCount());
         var response = listTopics.build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+    }
+
+    public DaprServer registerServices(ApplicationContext applicationContext) {
+        ServiceLoader.registerServices(applicationContext);
+        return this;
     }
 
     public DaprServer registerServices(Iterable<Class<?>> classes) {
@@ -150,8 +163,8 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
         try {
             var subscription = ServiceLoader.getSubscriptions().stream().filter(s -> s.topic.equals(request.getTopic()))
                     .findFirst().orElseThrow();
-            var refClass = ServiceLoader.create(subscription.method);
-            var invokeMethod = ServiceLoader.getMethod(subscription.method, refClass.getClass());
+            var refClass = serviceLoader.create(subscription.method);
+            var invokeMethod = serviceLoader.getMethod(subscription.method, refClass.getClass());
 
             var event = getEventFromRequest(request, invokeMethod);
 

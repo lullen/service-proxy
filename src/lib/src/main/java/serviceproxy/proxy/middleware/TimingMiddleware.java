@@ -3,9 +3,12 @@ package serviceproxy.proxy.middleware;
 import com.google.protobuf.Message;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import serviceproxy.model.Response;
 
+
+@Component
 public class TimingMiddleware extends ProxyMiddleware {
 
     private static final Logger _logger = LogManager.getLogger(TimingMiddleware.class);

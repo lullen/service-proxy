@@ -1,4 +1,4 @@
-package accessone.service;
+package accessone.app.service;
 
 import java.util.Date;
 
@@ -7,13 +7,15 @@ import com.test.proto.HelloResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
-import accessone.interfaces.HelloOne;
+import accessone.app.interfaces.HelloOne;
 import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
 
-public class HelloServiceImpl implements HelloOne {
-    private static final Logger _logger = LogManager.getLogger(HelloServiceImpl.class);
+@Component
+public class HelloOneServiceImpl implements HelloOne {
+    private static final Logger _logger = LogManager.getLogger(HelloOneServiceImpl.class);
 
     @Override
     public Response<HelloResponse> hello(HelloRequest request) {

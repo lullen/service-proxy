@@ -26,7 +26,7 @@ dependencies {
 
     implementation 'io.dapr:dapr-sdk:1.0.0'
     implementation 'org.apache.commons:commons-text'
-    implementation 'com.ludwigarch:serviceproxy:0.14'
+    implementation 'com.ludwigarch:serviceproxy:0.20'
 
     compile project(':client')
     compile project(':server')
@@ -35,5 +35,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'poc.app.App'
+    mainClass = 'poc.app.Application'
 }

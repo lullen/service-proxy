@@ -5,21 +5,38 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 
-import com.google.inject.Injector;
 import com.google.protobuf.Message;
+
+import org.springframework.stereotype.Component;
 
 import serviceproxy.server.ExposedService;
 
+@Component
 public class ServiceProxy implements InvocationHandler {
-    public static void init(ProxyType type, Injector injector) {
-        BaseServiceProxy.initProxy(type, injector);
+
+    private DaprProxy daprProxy;
+    
+    private InProcProxy inProcProxy;
+    private static ProxyType type;
+
+    // Maybe inject IServiceProxy and InProcProxy instead?
+    // IServiceProxy will be Dapr / InProc and InProc will be used for legacy
+    public ServiceProxy(DaprProxy daprProxy, InProcProxy inProcProxy) {
+        this.daprProxy = daprProxy;
+        this.inProcProxy = inProcProxy;
+
+    }
+
+
+    public static void init(ProxyType type) {
+        ServiceProxy.type = type;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T create(Class<T> clazz) {
+    public <T> T create(Class<T> clazz) {
 
         var classLoader = ServiceProxy.class.getClassLoader();
-        var proxy = Proxy.newProxyInstance(classLoader, new Class[] { clazz }, new ServiceProxy());
+        var proxy = Proxy.newProxyInstance(classLoader, new Class[] { clazz }, this);
         return (T) proxy;
     }
 
@@ -36,10 +53,13 @@ public class ServiceProxy implements InvocationHandler {
 
         Class<?> returnType = getReturnType(method);
 
-        var sp = BaseServiceProxy.create();
+
         var serviceAnnotation = method.getDeclaringClass().getAnnotation(ExposedService.class);
-        var res = sp.invoke(packageName, methodName, (Message) args[0], serviceAnnotation.legacy(), returnType);
-        return res;
+        if (type == ProxyType.Dapr && !serviceAnnotation.legacy()) {
+            return daprProxy.invoke(packageName, methodName, (Message) args[0], returnType);
+        } else {
+            return inProcProxy.invoke(packageName, methodName, (Message) args[0], returnType);
+        }
     }
 
     private Class<?> getReturnType(Method method) throws Exception {
