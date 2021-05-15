@@ -3,25 +3,19 @@
  */
 package poc.app;
 
-import java.util.List;
 import com.google.inject.Guice;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import accessone.app.AccessOneModule;
-import accessone.interfaces.HelloOne;
 import accesstwo.app.AccessTwoModule;
-import accesstwo.interfaces.HelloTwo;
 import client.app.ServiceCaller;
 import serviceproxy.helpers.ServiceLoader;
 import serviceproxy.proxy.ServiceProxy;
-import serviceproxy.server.ExposedService;
 import serviceproxy.proxy.ProxyType;
 import serviceproxy.proxy.ProxyModule;
 import server.app.DaprModule;
-import server.interfaces.HelloServer;
-import org.reflections.Reflections;
-import org.reflections.scanners.TypeAnnotationsScanner;
+
 public class App {
     public static void main(String[] args) throws Exception {
         Configurator.setRootLevel(Level.DEBUG);
@@ -32,7 +26,6 @@ public class App {
         ServiceProxy.init(ProxyType.InProc, injector);
 
         ServiceLoader.init(injector);
-        ServiceLoader.registerServices(List.of(HelloServer.class, HelloOne.class, HelloTwo.class));
 
         var caller = new ServiceCaller();
         caller.call();

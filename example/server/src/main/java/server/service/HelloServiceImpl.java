@@ -45,7 +45,6 @@ public class HelloServiceImpl implements HelloServer {
 
         var sp = ServiceProxy.create(accesstwo.interfaces.HelloTwo.class);
         var res2 = sp.hello(request);
-
         if (res2.result != null) {
             System.out.println(res2.result.getText());
         }

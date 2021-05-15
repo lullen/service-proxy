@@ -28,6 +28,9 @@ public class ServiceLoader {
     public static Object create(String method) throws Exception {
         var className = method.substring(0, method.lastIndexOf("."));
         var invokeClass = _services.get(className.toLowerCase());
+        if (invokeClass == null) {
+            return null;
+        }
         return _injector.getInstance(invokeClass);
     }
 
@@ -57,11 +60,15 @@ public class ServiceLoader {
     }
 
     public static void registerServices(Iterable<Class<?>> classes) {
-        
+
         for (var clazz : classes) {
             var exposedService = clazz.getAnnotation(ExposedService.class);
             if (exposedService != null) {
-                _services.put(clazz.getSimpleName().toLowerCase(), clazz);
+                var className = clazz.getSimpleName().toLowerCase();
+                if (_services.containsKey(className)) {
+                    _logger.warn("Overwriting {} as it has already been added.", className);
+                }
+                _services.put(className, clazz);
             }
         }
         _logger.info("Registered {} services.", _services.size());

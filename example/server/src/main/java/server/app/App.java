@@ -1,8 +1,6 @@
 package server.app;
 
 import java.io.IOException;
-import java.util.List;
-
 import com.google.inject.Guice;
 
 import org.apache.logging.log4j.Level;
@@ -13,7 +11,6 @@ import serviceproxy.proxy.ProxyType;
 import serviceproxy.server.ServerModule;
 import serviceproxy.proxy.ServiceProxy;
 import serviceproxy.server.DaprServer;
-import server.interfaces.HelloServer;
 
 public class App {
 
@@ -24,7 +21,6 @@ public class App {
         ServiceProxy.init(ProxyType.Dapr, injector);
 
         final var service = injector.getInstance(DaprServer.class);
-        service.registerServices(List.of(HelloServer.class));
         service.start(5000);
         service.awaitTermination();
     }

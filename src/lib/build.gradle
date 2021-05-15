@@ -54,7 +54,7 @@ publishing {
         gpr(MavenPublication) {
             groupId = 'com.ludwigarch'
             artifactId = 'serviceproxy'
-            version = '0.8'
+            version = '0.15'
 
             from(components.java)
         }

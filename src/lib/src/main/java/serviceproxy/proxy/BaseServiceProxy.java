@@ -21,12 +21,14 @@ import serviceproxy.model.Error;
 import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
 import serviceproxy.proxy.middleware.ProxyMiddleware;
+import serviceproxy.server.ExposedService;
 import io.dapr.client.DaprClient;
 import io.dapr.client.DaprClientBuilder;
 import io.dapr.client.domain.HttpExtension;
 import io.dapr.exceptions.DaprException;
 import io.dapr.serializer.DefaultObjectSerializer;
 
+@ExposedService(legacy = false)
 public class BaseServiceProxy implements IServiceProxy {
     private static final Logger _logger = LogManager.getLogger(BaseServiceProxy.class);
     private static ProxySettings _settings = new ProxySettings();
@@ -62,7 +64,7 @@ public class BaseServiceProxy implements IServiceProxy {
 
     private class DaprProxy implements IServiceProxy {
         @Override()
-        public <T> Response<T> invoke(String appId, String method, Message request, Class<T> responseClass)
+        public <T> Response<T> invoke(String appId, String method, Message request, boolean legacy, Class<T> responseClass)
                 throws Exception {
 
             Response<T> methodResult;
@@ -77,21 +79,21 @@ public class BaseServiceProxy implements IServiceProxy {
                     var code = Status.Code.valueOf(exception.getErrorCode());
 
                     switch (code) {
-                    case ALREADY_EXISTS:
-                        errorCode = StatusCode.AlreadyExists;
-                        break;
-                    case INVALID_ARGUMENT:
-                        errorCode = StatusCode.InvalidInput;
-                        break;
-                    case NOT_FOUND:
-                        errorCode = StatusCode.NotFound;
-                        break;
-                    case UNAUTHENTICATED:
-                        errorCode = StatusCode.Unauthorized;
-                        break;
-                    default:
-                        errorCode = StatusCode.Exception;
-                        break;
+                        case ALREADY_EXISTS:
+                            errorCode = StatusCode.AlreadyExists;
+                            break;
+                        case INVALID_ARGUMENT:
+                            errorCode = StatusCode.InvalidInput;
+                            break;
+                        case NOT_FOUND:
+                            errorCode = StatusCode.NotFound;
+                            break;
+                        case UNAUTHENTICATED:
+                            errorCode = StatusCode.Unauthorized;
+                            break;
+                        default:
+                            errorCode = StatusCode.Exception;
+                            break;
                     }
 
                     methodResult = new Response<T>();
@@ -123,24 +125,38 @@ public class BaseServiceProxy implements IServiceProxy {
 
     private class InProxProxy implements IServiceProxy {
         @Override()
-        public <T> Response<T> invoke(String appId, String method, Message request, Class<T> responseClass)
-        throws Exception {
+        @SuppressWarnings("unchecked")
+        public <T> Response<T> invoke(String appId, String method, Message request, boolean legacy, Class<T> responseClass)
+                throws Exception {
             runBefore(appId, method, request, responseClass);
-            
-            var instance = ServiceLoader.create(method);
-            var invokeMethod = ServiceLoader.getMethod(method, instance.getClass());
-            
-            @SuppressWarnings("unchecked")
-            var response = (Response<T>) invokeMethod.invoke(instance, request);
-
-            runAfter(appId, method, request, response);
-            return response;
+            Response<T> methodResult;
+            try {
+                var instance = ServiceLoader.create(method);
+                if (instance != null) {
+                    var invokeMethod = ServiceLoader.getMethod(method, instance.getClass());
+                    methodResult = (Response<T>) invokeMethod.invoke(instance, request);
+                } else {
+                    methodResult = new Response<T>();
+                    var errorMsg = String.format(
+                            "Could not invoke \"%s.%s\". Have you registered it in the service proxy?", appId, method);
+                    methodResult.error = new Error(StatusCode.Exception, errorMsg);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                methodResult = new Response<T>();
+                methodResult.error = new Error(StatusCode.Exception, e.getMessage());
+            }
+            runAfter(appId, method, request, methodResult);
+            return methodResult;
         }
 
         @Override
         public void publish(String pubsubName, String topic, Message request) throws Exception {
             if (pubsubName == "") {
                 throw new Exception("Property pubsubName is not set");
+            }
+            if (topic == "") {
+                throw new Exception("Property topic is not set");
             }
 
             _logger.info("InProc: Published event to topic {} on {}", topic, pubsubName);
@@ -173,7 +189,7 @@ public class BaseServiceProxy implements IServiceProxy {
                 var a = classLoader.getResource(secretStoreName + ".json").toURI();
                 var path = Paths.get(a);
                 json = Files.readString(path);
-                
+
             } catch (Exception e) {
                 throw new Exception("Could not open file " + secretStoreName + ".json", e);
             }
@@ -187,12 +203,12 @@ public class BaseServiceProxy implements IServiceProxy {
     }
 
     @Override
-    public <T> Response<T> invoke(String appId, String method, Message request, Class<T> responseClass)
+    public <T> Response<T> invoke(String appId, String method, Message request, boolean legacy, Class<T> responseClass)
             throws Exception {
-        if (_settings.type == ProxyType.Dapr) {
-            return new DaprProxy().invoke(appId, method, request, responseClass);
+        if (_settings.type == ProxyType.Dapr && !legacy) {
+            return new DaprProxy().invoke(appId, method, request, legacy, responseClass);
         } else {
-            return new InProxProxy().invoke(appId, method, request, responseClass);
+            return new InProxProxy().invoke(appId, method, request, legacy, responseClass);
         }
     }
 
