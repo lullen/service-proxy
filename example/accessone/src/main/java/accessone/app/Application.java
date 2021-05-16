@@ -1,6 +1,5 @@
 package accessone.app;
 
-import java.util.Arrays;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
@@ -42,14 +41,4 @@ public class Application {
 
         };
     }
-
-    // public static void main(String[] args) throws IOException, InterruptedException {
-    //     Configurator.setRootLevel(Level.INFO);
-
-    //     var injector = Guice.createInjector(new AccessOneModule(), new ServerModule());
-
-    //     final var service = injector.getInstance(DaprServer.class);
-    //     service.start(5001);
-    //     service.awaitTermination();
-    // }
 }

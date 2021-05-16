@@ -45,18 +45,4 @@ public class Application {
 
         };
     }
-
-    // public static void main(String[] args) throws IOException,
-    // InterruptedException {
-    // Configurator.setRootLevel(Level.INFO);
-
-    // var injector = Guice.createInjector(new DaprModule(), new ProxyModule(), new
-    // ServerModule());
-
-    // ServiceProxy.init(ProxyType.Dapr);
-
-    // final var service = injector.getInstance(DaprServer.class);
-    // service.start(5000);
-    // service.awaitTermination();
-    // }
 }
