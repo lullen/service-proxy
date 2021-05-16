@@ -31,16 +31,6 @@ public class Application {
                 .registerServices(ctx)
                 .start(5002)
                 .awaitTermination();
-
-            // Add client Shutdown Logic
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    server.shutdown();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }));
-
         };
     }
 }

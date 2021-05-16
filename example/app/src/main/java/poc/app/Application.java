@@ -19,6 +19,8 @@ import server.ServerConfiguration;
 import serviceproxy.ServiceProxyConfiguration;
 import serviceproxy.helpers.ServiceLoader;
 import serviceproxy.proxy.ServiceProxy;
+import serviceproxy.pubsub.EventPublisher;
+import serviceproxy.secret.SecretStore;
 import serviceproxy.proxy.ProxyType;
 
 @SpringBootApplication
@@ -33,7 +35,7 @@ public class Application {
 
     public static void main(String[] args) {
         var app = new SpringApplication(Application.class);
-        app.setWebApplicationType(WebApplicationType.NONE);
+        // app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
     }
 
@@ -42,11 +44,13 @@ public class Application {
         return args -> {
             ServiceLoader.registerServices(ctx);
             ServiceProxy.init(ProxyType.InProc);
+            EventPublisher.init(ProxyType.InProc);
+            SecretStore.init(ProxyType.InProc);
             // ServiceLoader.registerServices(List.of(HelloServer.class, HelloOne.class, HelloTwo.class));
-            var caller = ctx.getBean(ServiceCaller.class);
-            caller.call();
-            caller.publish();
-            caller.getSecrets();
+            // var caller = ctx.getBean(ServiceCaller.class);
+            // caller.call();
+            // caller.publish();
+            // caller.getSecrets();
 
         };
     }

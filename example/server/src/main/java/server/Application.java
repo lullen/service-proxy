@@ -33,16 +33,6 @@ public class Application {
                 .start(5000)
                 .awaitTermination();
             // server.registerServices(List.of(HelloServer.class));
-
-            // // Add client Shutdown Logic
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    server.shutdown();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }));
-
         };
     }
 }
