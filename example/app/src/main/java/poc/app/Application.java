@@ -5,7 +5,6 @@ package poc.app;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,6 @@ import org.springframework.context.annotation.Import;
 import accessone.app.AccessOneConfiguration;
 import accesstwo.app.AccessTwoConfiguration;
 import client.app.ClientConfiguration;
-import client.app.ServiceCaller;
 import server.ServerConfiguration;
 import serviceproxy.ServiceProxyConfiguration;
 import serviceproxy.helpers.ServiceLoader;

@@ -1,16 +1,16 @@
 syntax = "proto3";
 
-option java_package = "com.test.proto";
-option java_outer_classname = "HelloWorldProto";
+option java_package = "accesstwo.interfaces.proto";
+option java_outer_classname = "HelloTwoProto";
 option java_multiple_files = true;
 
-message HelloRequest {
+message HelloTwoRequest {
   string text = 1;
   string otherText = 2;
   string newText = 3;
 }
 
-message HelloResponse {
+message HelloTwoResponse {
   string text = 1;
   string otherText = 2;
 }

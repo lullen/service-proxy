@@ -13,6 +13,11 @@ plugins {
     id 'com.google.protobuf' version '0.8.15'
 }
 
+dependencies {
+
+    implementation 'com.ludwigarch:serviceproxy:0.20'
+}
+
 protobuf {
   protoc {
     artifact = "com.google.protobuf:protoc:3.12.0"

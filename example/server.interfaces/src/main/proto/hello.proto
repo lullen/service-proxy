@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package = "server.interfaces.proto";
+option java_outer_classname = "HelloServerProto";
+option java_multiple_files = true;
+
+message HelloRequest {
+  string text = 1;
+  string otherText = 2;
+  string newText = 3;
+}
+
+message HelloResponse {
+  string text = 1;
+  string otherText = 2;
+}

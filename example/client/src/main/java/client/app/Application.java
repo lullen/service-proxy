@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import serviceproxy.ServiceProxyConfiguration;
+import serviceproxy.helpers.ServiceLoader;
 import serviceproxy.proxy.ProxyType;
 import serviceproxy.proxy.ServiceProxy;
 import serviceproxy.pubsub.EventPublisher;
@@ -28,6 +29,7 @@ public class Application {
             ServiceProxy.init(ProxyType.Dapr);
             EventPublisher.init(ProxyType.Dapr);
             SecretStore.init(ProxyType.Dapr);
+            ServiceLoader.registerServices(ctx);
         };
     }
 }

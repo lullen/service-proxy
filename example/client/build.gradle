@@ -13,10 +13,8 @@ dependencies {
     implementation 'io.dapr:dapr-sdk:1.0.0'
     implementation 'com.ludwigarch:serviceproxy:0.20'
 
-    compile project(':proto')
-    compile project(':server')
-    compile project(':accessone')
-    compile project(':accesstwo')
+    compile project(':server.interfaces')
+    compile project(':accessone.interfaces')
 }
 
 application {

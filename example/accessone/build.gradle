@@ -21,7 +21,7 @@ dependencies {
     implementation 'com.ludwigarch:serviceproxy:0.20'
 
     // compile project(':common')
-    compile project(':proto')
+    compile project(':accessone.interfaces')
 }
 
 application {

@@ -2,18 +2,19 @@ package server.service;
 
 import java.util.Date;
 
-import com.test.proto.HelloRequest;
-import com.test.proto.HelloResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import accesstwo.interfaces.proto.HelloTwoRequest;
+import server.interfaces.HelloServer;
+import server.interfaces.proto.HelloRequest;
+import server.interfaces.proto.HelloResponse;
 import serviceproxy.model.Error;
 import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
 import serviceproxy.proxy.ServiceProxy;
-import server.interfaces.HelloServer;
 
 @Component
 public class HelloServerServiceImpl implements HelloServer {
@@ -52,8 +53,11 @@ public class HelloServerServiceImpl implements HelloServer {
         });
         _logger.info(result.hasError().toString());
 
-        var sp = serviceProxy.create(accesstwo.app.interfaces.HelloTwo.class);
-        var res2 = sp.hello(request);
+        var sp = serviceProxy.create(accesstwo.interfaces.HelloTwo.class);
+        
+        var request2 = HelloTwoRequest.newBuilder().setText(request.getText()).setNewText(request.getNewText())
+        .setOtherText(request.getOtherText()).build();
+        var res2 = sp.hello(request2);
         if (res2.result != null) {
             System.out.println(res2.result.getText());
         }

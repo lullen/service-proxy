@@ -30,7 +30,8 @@ dependencies {
 
     compile project(':client')
     compile project(':server')
-    compile project(':proto')
+    compile project(':accessone')
+    compile project(':accesstwo')
 }
 
 application {

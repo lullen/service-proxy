@@ -12,9 +12,12 @@ include(
     'app',
     'client',
     'server',
+    'server.interfaces',
     'proto',
     'accessone',
-    'accesstwo'
+    'accessone.interfaces',
+    'accesstwo',
+    'accesstwo.interfaces'
 )
 
 // project(':client').projectDir = new File('./client')

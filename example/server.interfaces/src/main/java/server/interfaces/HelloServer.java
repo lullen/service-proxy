@@ -1,12 +1,12 @@
 package server.interfaces;
 
-import com.test.proto.HelloResponse;
+import server.interfaces.proto.HelloRequest;
+import server.interfaces.proto.HelloResponse;
 
 import serviceproxy.model.Response;
 import serviceproxy.pubsub.Subscriber;
 import serviceproxy.server.ExposedService;
 
-import com.test.proto.HelloRequest;
 
 @ExposedService
 public interface HelloServer {
