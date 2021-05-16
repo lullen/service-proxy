@@ -10,9 +10,9 @@
 rootProject.name = 'poc'
 include(
     'app',
-    'client',
-    'server',
-    'server.interfaces',
+    'manager',
+    'engine',
+    'engine.interfaces',
     'proto',
     'accessone',
     'accessone.interfaces',

@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Import;
 
 import accessone.app.AccessOneConfiguration;
 import accesstwo.app.AccessTwoConfiguration;
-import client.app.ClientConfiguration;
-import server.ServerConfiguration;
+import manager.app.ManagerConfiguration;
+import engine.EngineConfiguration;
 import serviceproxy.ServiceProxyConfiguration;
 import serviceproxy.helpers.ServiceLoader;
 import serviceproxy.proxy.ServiceProxy;
@@ -24,8 +24,8 @@ import serviceproxy.proxy.ProxyType;
 @SpringBootApplication
 @Import({ 
     ServiceProxyConfiguration.class, 
-    ClientConfiguration.class, 
-    ServerConfiguration.class,
+    ManagerConfiguration.class, 
+    EngineConfiguration.class,
     AccessOneConfiguration.class,
     AccessTwoConfiguration.class
 })
