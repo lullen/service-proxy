@@ -4,18 +4,21 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.15'
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.16'
   }
 }
 
 plugins {
     id 'poc.java-library-conventions'
-    id 'com.google.protobuf' version '0.8.15'
+    id 'com.google.protobuf' version '0.8.16'
 }
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 dependencies {
 
-    implementation 'com.ludwigarch:serviceproxy:0.20'
+    compileOnly 'com.ludwigarch:serviceproxy:0.22'
 }
 
 protobuf {
@@ -42,3 +45,9 @@ sourceSets {
     }
   }
 }
+
+// tasks.named('extractIncludeProto') {
+//     // Use junit platform for unit tests.
+//     // useJUnitPlatform()
+//     setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+// }

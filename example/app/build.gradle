@@ -19,19 +19,19 @@ repositories {
     }
 }
 
-sourceCompatibility = JavaVersion.VERSION_15
-targetCompatibility = JavaVersion.VERSION_15
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 dependencies {
 
     implementation 'io.dapr:dapr-sdk:1.0.0'
     implementation 'org.apache.commons:commons-text'
-    implementation 'com.ludwigarch:serviceproxy:0.20'
+    implementation 'com.ludwigarch:serviceproxy:0.22'
 
-    compile project(':manager')
-    compile project(':engine')
-    compile project(':accessone')
-    compile project(':accesstwo')
+    api project(':manager')
+    api project(':engine')
+    api project(':accessone')
+    api project(':accesstwo')
 }
 
 application {

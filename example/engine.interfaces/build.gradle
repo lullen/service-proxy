@@ -4,18 +4,18 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.15'
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.16'
   }
 }
 
 plugins {
     id 'poc.java-library-conventions'
-    id 'com.google.protobuf' version '0.8.15'
+    id 'com.google.protobuf' version '0.8.16'
 }
 
 dependencies {
 
-    implementation 'com.ludwigarch:serviceproxy:0.20'
+    implementation 'com.ludwigarch:serviceproxy:0.22'
 }
 
 protobuf {

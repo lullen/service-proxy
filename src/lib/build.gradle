@@ -14,11 +14,12 @@ plugins {
 
 repositories {
     // Use JCenter for resolving dependencies.
-    jcenter()
+    // jcenter()
+    mavenCentral()
 }
 
-sourceCompatibility = JavaVersion.VERSION_15
-targetCompatibility = JavaVersion.VERSION_15
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 dependencies {
     // Use JUnit test framework.
@@ -55,7 +56,7 @@ publishing {
         gpr(MavenPublication) {
             groupId = 'com.ludwigarch'
             artifactId = 'serviceproxy'
-            version = '0.20'
+            version = '0.22'
 
             from(components.java)
         }
