@@ -45,9 +45,3 @@ sourceSets {
     }
   }
 }
-
-// tasks.named('extractIncludeProto') {
-//     // Use junit platform for unit tests.
-//     // useJUnitPlatform()
-//     setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-// }
