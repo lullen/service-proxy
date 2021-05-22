@@ -40,7 +40,7 @@ public class Application {
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
-            ServiceLoader.registerServices(ctx);
+            ServiceLoader.registerServices(ctx, ProxyType.InProc);
             ServiceProxy.init(ProxyType.InProc);
             EventPublisher.init(ProxyType.InProc);
             SecretStore.init(ProxyType.InProc);

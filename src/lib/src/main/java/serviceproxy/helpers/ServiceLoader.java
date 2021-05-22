@@ -4,10 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import serviceproxy.proxy.ProxyType;
 import serviceproxy.pubsub.Subscriber;
 import serviceproxy.pubsub.Subscription;
 import serviceproxy.server.ExposedService;
@@ -39,7 +37,7 @@ public class ServiceLoader {
         }
         return applicationContext.getAutowireCapableBeanFactory().getBean(invokeClass);
     }
- 
+
     public Method getMethod(String methodName, Class<?> invokeClass) throws Exception {
         Method invokeMethod = null;
 
@@ -65,25 +63,26 @@ public class ServiceLoader {
         return _services;
     }
 
-    public static void registerServices(ApplicationContext ctx) {
+    public static void registerServices(ApplicationContext ctx, ProxyType type) {
         var serviceDictionary = ctx.getBeansWithAnnotation(ExposedService.class);
-        var services = serviceDictionary
-                .values()
-                .stream()
-                .flatMap(b -> Arrays.stream(b.getClass().getInterfaces()))
+        var services = serviceDictionary.values().stream().flatMap(b -> Arrays.stream(b.getClass().getInterfaces()))
                 .collect(Collectors.toUnmodifiableList());
-        ServiceLoader.registerServices(services);
+        ServiceLoader.registerServices(services, type);
     }
 
-    public static void registerServices(Iterable<? extends Class<?>> classes) {
+    public static void registerServices(Iterable<? extends Class<?>> classes, ProxyType type) {
 
         for (var clazz : classes) {
             var exposedService = clazz.getAnnotation(ExposedService.class);
             if (exposedService != null) {
-                _logger.error("getName " + clazz.getName());
-                _logger.error("getCanonicalName " + clazz.getCanonicalName());
-                _logger.error("getTypeName " + clazz.getTypeName());
-                var className = clazz.getName().toLowerCase();
+                String className;
+                if (type == ProxyType.InProc) {
+                    className = clazz.getName();
+                } else {
+                    className = clazz.getSimpleName();
+                }
+                className = className.toLowerCase();
+
                 if (_services.containsKey(className)) {
                     _logger.warn("Overwriting {} as it has already been added.", className);
                 }
@@ -92,20 +91,20 @@ public class ServiceLoader {
         }
         _logger.info("Registered {} services.", _services.size());
 
-        registerSubscribers();
+        registerSubscribers(type);
     }
 
     public static ArrayList<Subscription> getSubscriptions() {
         return _subscriptions;
     }
 
-    private static void registerSubscribers() {
+    private static void registerSubscribers(ProxyType type) {
         ServiceLoader.getServices().forEach((k, clazz) -> {
             for (var method : clazz.getMethods()) {
                 var subscriber = method.getAnnotation(Subscriber.class);
                 if (subscriber != null) {
                     var s = new Subscription();
-                    s.method = clazz.getSimpleName() + "." + method.getName();
+                    s.method = String.format("%s.%s", getServiceClassName(clazz, type), method.getName());
                     s.topic = subscriber.topic();
                     s.pubsub = subscriber.name();
                     s.legacy = subscriber.legacy();
@@ -115,5 +114,15 @@ public class ServiceLoader {
             }
         });
         _logger.info("Registered {} topics", _subscriptions.size());
+    }
+
+    private static String getServiceClassName(Class<?> clazz, ProxyType type) {
+        String className;
+        if (type == ProxyType.InProc) {
+            className = clazz.getName();
+        } else {
+            className = clazz.getSimpleName();
+        }
+        return className;
     }
 }

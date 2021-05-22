@@ -7,6 +7,6 @@ import serviceproxy.server.ExposedService;
 
 
 @ExposedService
-public interface HelloTwo {
+public interface Hello {
     Response<HelloTwoResponse> hello(HelloTwoRequest request);
 }

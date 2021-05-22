@@ -9,7 +9,7 @@ import serviceproxy.server.ExposedService;
 
 
 @ExposedService
-public interface HelloServer {
+public interface Hello {
 
     @Subscriber(name = "pubsub", topic = "hello")
     Response<HelloResponse> hello(HelloRequest request);

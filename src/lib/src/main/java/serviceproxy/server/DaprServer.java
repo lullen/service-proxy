@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 import serviceproxy.helpers.ServiceLoader;
 import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
+import serviceproxy.proxy.ProxyType;
 
 @Component
 public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase implements ServerHost {
@@ -154,12 +155,12 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase implements S
 
     @Override
     public ServerHost registerServices(ApplicationContext applicationContext) {
-        ServiceLoader.registerServices(applicationContext);
+        ServiceLoader.registerServices(applicationContext, ProxyType.Dapr);
         return this;
     }
 
     public DaprServer registerServices(Iterable<Class<?>> classes) {
-        ServiceLoader.registerServices(classes);
+        ServiceLoader.registerServices(classes, ProxyType.Dapr);
         return this;
     }
 

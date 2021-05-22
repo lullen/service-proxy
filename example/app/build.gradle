@@ -26,12 +26,13 @@ dependencies {
 
     implementation 'io.dapr:dapr-sdk:1.0.0'
     implementation 'org.apache.commons:commons-text'
-    implementation 'com.ludwigarch:serviceproxy:0.22'
+    // api project(':lib')
 
     api project(':manager')
     api project(':engine')
     api project(':accessone')
     api project(':accesstwo')
+    api project(':lib')
 }
 
 application {

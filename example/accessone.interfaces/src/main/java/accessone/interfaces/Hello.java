@@ -7,6 +7,6 @@ import accessone.interfaces.proto.HelloOneRequest;
 import accessone.interfaces.proto.HelloOneResponse;
 
 @ExposedService
-public interface HelloOne {
+public interface Hello {
     Response<HelloOneResponse> hello(HelloOneRequest request);
 }

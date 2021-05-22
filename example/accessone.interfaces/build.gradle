@@ -17,8 +17,7 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 dependencies {
-
-    compileOnly 'com.ludwigarch:serviceproxy:0.22'
+    api project(':lib')
 }
 
 protobuf {

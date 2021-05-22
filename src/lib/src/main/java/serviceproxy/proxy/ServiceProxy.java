@@ -47,7 +47,7 @@ public class ServiceProxy implements InvocationHandler {
         }
         
         var packageName = method.getDeclaringClass().getPackageName();
-        packageName = packageName.substring(0, packageName.lastIndexOf("."));
+        var appId = packageName.substring(0, packageName.lastIndexOf("."));
 
         var methodName = method.getDeclaringClass().getSimpleName() + "." + method.getName();
 
@@ -56,9 +56,10 @@ public class ServiceProxy implements InvocationHandler {
 
         var serviceAnnotation = method.getDeclaringClass().getAnnotation(ExposedService.class);
         if (type == ProxyType.Dapr && !serviceAnnotation.legacy()) {
-            return daprProxy.invoke(packageName, methodName, (Message) args[0], returnType);
+            return daprProxy.invoke(appId, methodName, (Message) args[0], returnType);
         } else {
-            return inProcProxy.invoke(packageName, methodName, (Message) args[0], returnType);
+            methodName = String.format("%s.%s", packageName, methodName);
+            return inProcProxy.invoke(appId, methodName, (Message) args[0], returnType);
         }
     }
 

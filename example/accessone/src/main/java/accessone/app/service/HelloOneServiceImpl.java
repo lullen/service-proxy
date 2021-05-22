@@ -6,14 +6,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import accessone.interfaces.HelloOne;
+import accessone.interfaces.Hello;
 import accessone.interfaces.proto.HelloOneRequest;
 import accessone.interfaces.proto.HelloOneResponse;
 import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
 
 @Component
-public class HelloOneServiceImpl implements HelloOne {
+public class HelloOneServiceImpl implements Hello {
     private static final Logger _logger = LogManager.getLogger(HelloOneServiceImpl.class);
 
     @Override

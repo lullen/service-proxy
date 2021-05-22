@@ -17,9 +17,11 @@ include(
     'accessone',
     'accessone.interfaces',
     'accesstwo',
-    'accesstwo.interfaces'
+    'accesstwo.interfaces',
+    'lib'
 )
 
+project(':lib').projectDir = new File('../src/lib')
 // project(':client').projectDir = new File('./client')
 // project(':common').projectDir = new File('./common')
 // project(':proto').projectDir = new File('./proto')

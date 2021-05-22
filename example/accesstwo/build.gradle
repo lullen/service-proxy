@@ -16,7 +16,7 @@ dependencies {
     // implementation 'com.google.inject:guice:5.0.1'
 
     implementation 'io.dapr:dapr-sdk:1.0.0'
-    implementation 'com.ludwigarch:serviceproxy:0.22'
+    api project(':lib')
 
     api project(':accesstwo.interfaces')
 }

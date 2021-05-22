@@ -4,14 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import accessone.interfaces.HelloOne;
 import accessone.interfaces.proto.HelloOneRequest;
 import manager.app.clients.TestClient;
 import serviceproxy.model.Response;
 import serviceproxy.pubsub.EventPublisher;
 import serviceproxy.secret.SecretStore;
 import serviceproxy.proxy.ServiceProxy;
-import engine.interfaces.HelloServer;
 import engine.interfaces.proto.HelloRequest;
 import engine.interfaces.proto.HelloResponse;
 
@@ -32,8 +30,8 @@ public class ServiceCaller {
         _logger.info("Howdy from call");
         var count = 0;
         var start = System.currentTimeMillis();
-        var sp = serviceProxy.create(HelloServer.class);
-        var sp2 = serviceProxy.create(HelloOne.class);
+        var sp = serviceProxy.create(engine.interfaces.Hello.class);
+        var sp2 = serviceProxy.create(accessone.interfaces.Hello.class);
         var sp3 = serviceProxy.create(TestClient.class);
 
         while (count < 2) {

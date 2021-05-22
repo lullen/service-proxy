@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import accesstwo.interfaces.proto.HelloTwoRequest;
-import engine.interfaces.HelloServer;
+import engine.interfaces.Hello;
 import engine.interfaces.proto.HelloRequest;
 import engine.interfaces.proto.HelloResponse;
 import serviceproxy.model.Error;
@@ -17,7 +17,7 @@ import serviceproxy.model.StatusCode;
 import serviceproxy.proxy.ServiceProxy;
 
 @Component
-public class HelloServerServiceImpl implements HelloServer {
+public class HelloServerServiceImpl implements Hello {
 
     private ServiceProxy serviceProxy;
 
@@ -29,7 +29,7 @@ public class HelloServerServiceImpl implements HelloServer {
 
     @Override
     public Response<HelloResponse> hello(HelloRequest request) {
-        _logger.info("HelloServiceImpl.hello called");
+        _logger.info("HelloServerServiceImpl.hello called");
         var response = HelloResponse.newBuilder().setText("Hello " + request.getText() + " " + request.getOtherText())
                 .setOtherText(request.getOtherText()).build();
         _logger.info("Hello {} {}", request.getText(), new Date().getTime());
@@ -53,7 +53,7 @@ public class HelloServerServiceImpl implements HelloServer {
         });
         _logger.info(result.hasError().toString());
 
-        var sp = serviceProxy.create(accesstwo.interfaces.HelloTwo.class);
+        var sp = serviceProxy.create(accesstwo.interfaces.Hello.class);
         
         var request2 = HelloTwoRequest.newBuilder().setText(request.getText()).setNewText(request.getNewText())
         .setOtherText(request.getOtherText()).build();

@@ -14,7 +14,7 @@ public class LoggingMiddleware extends ProxyMiddleware {
 
     @Override
     public <T> void before(String appId, String method, Message request, Class<T> responseClass) {
-        _logger.info("Calling '{}'", method);
+        _logger.info("Calling '{}' on app '{}'", method, appId);
     }
 
     @Override

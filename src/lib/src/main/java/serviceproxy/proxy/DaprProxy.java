@@ -29,7 +29,6 @@ public class DaprProxy extends BaseServiceProxy implements IServiceProxy {
             throws Exception {
 
         Response<T> methodResult;
-        method = String.format("{}.{}", appId, method);
         this.runBefore(appId, method, request, responseClass);
 
         try (DaprClient client = new DaprClientBuilder().build()) {

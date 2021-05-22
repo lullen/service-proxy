@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import accesstwo.interfaces.HelloTwo;
+import accesstwo.interfaces.Hello;
 import accesstwo.interfaces.proto.HelloTwoRequest;
 import accesstwo.interfaces.proto.HelloTwoResponse;
 import serviceproxy.model.Error;
@@ -14,12 +14,12 @@ import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
 
 @Component
-public class HelloTwoServiceImpl implements HelloTwo {
+public class HelloTwoServiceImpl implements Hello {
     private static final Logger _logger = LogManager.getLogger(HelloTwoServiceImpl.class);
 
     @Override
     public Response<HelloTwoResponse> hello(HelloTwoRequest request) {
-        _logger.info("HelloServiceImpl.hello called");
+        _logger.info("HelloTwoServiceImpl.hello called");
         var response = HelloTwoResponse.newBuilder().setText("Hello " + request.getText() + " " + request.getOtherText())
                 .setOtherText(request.getOtherText()).build();
         _logger.info("Hello {} {}", request.getText(), new Date().getTime());

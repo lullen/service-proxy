@@ -15,7 +15,7 @@
             "type": "java",
             "name": "Launch App",
             "request": "launch",
-            "mainClass": "poc.app.App",
+            "mainClass": "poc.app.Application",
             "projectName": "app"
         },
         {

@@ -29,7 +29,7 @@ public class Application {
             ServiceProxy.init(ProxyType.Dapr);
             EventPublisher.init(ProxyType.Dapr);
             SecretStore.init(ProxyType.Dapr);
-            ServiceLoader.registerServices(ctx);
+            ServiceLoader.registerServices(ctx, ProxyType.Dapr);
         };
     }
 }

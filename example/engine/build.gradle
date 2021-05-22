@@ -17,7 +17,7 @@ dependencies {
     // implementation 'org.springframework.boot:spring-boot-starter-web:2.4.3'
 
     implementation 'io.dapr:dapr-sdk:1.0.0'
-    implementation 'com.ludwigarch:serviceproxy:0.22'
+    api project(':lib')
 
     api project(':accesstwo.interfaces')
     api project(':engine.interfaces')
