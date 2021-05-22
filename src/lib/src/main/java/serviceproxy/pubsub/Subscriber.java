@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface Subscriber {
     String topic();
     String name();
+    boolean legacy() default false;
 }

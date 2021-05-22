@@ -22,6 +22,6 @@ public class TimingMiddleware extends ProxyMiddleware {
 
     @Override
     public <T> void after(String appId, String method, Message request, Response<T> response) {
-        _logger.info("Calling '{}.{}' took {} ms", appId, method, (System.currentTimeMillis() - _start));
+        _logger.info("Calling '{}' took {} ms", method, (System.currentTimeMillis() - _start));
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import serviceproxy.model.Response;
 
-
 @Component
 public class LoggingMiddleware extends ProxyMiddleware {
 
@@ -15,16 +14,16 @@ public class LoggingMiddleware extends ProxyMiddleware {
 
     @Override
     public <T> void before(String appId, String method, Message request, Class<T> responseClass) {
-        _logger.info("Calling '{}.{}' on app '{}'", appId, method, appId);
+        _logger.info("Calling '{}'", method);
     }
 
     @Override
     public <T> void after(String appId, String method, Message request, Response<T> response) {
         if (response.hasError()) {
-            _logger.warn("Method '{}.{}' returned '{}' with message '{}'", appId, method,
-                    response.error.getStatusCode(), response.error.getError());
+            _logger.warn("Method '{}' returned '{}' with message '{}'", method, response.error.getStatusCode(),
+                    response.error.getError());
         } else {
-            _logger.info("Method '{}.{}' returned '{}'", appId, method, response.error.getStatusCode());
+            _logger.info("Method '{}' returned '{}'", method, response.error.getStatusCode());
         }
 
     }

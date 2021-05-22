@@ -2,10 +2,13 @@ package serviceproxy.helpers;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +39,7 @@ public class ServiceLoader {
         }
         return applicationContext.getAutowireCapableBeanFactory().getBean(invokeClass);
     }
-
+ 
     public Method getMethod(String methodName, Class<?> invokeClass) throws Exception {
         Method invokeMethod = null;
 
@@ -63,26 +66,24 @@ public class ServiceLoader {
     }
 
     public static void registerServices(ApplicationContext ctx) {
-        List<Class<?>> services = new LinkedList<Class<?>>();
         var serviceDictionary = ctx.getBeansWithAnnotation(ExposedService.class);
-        serviceDictionary
+        var services = serviceDictionary
                 .values()
                 .stream()
-                .map(b -> b.getClass())
-                .forEach(c -> {
-                    for (var clazz : c.getInterfaces()) {
-                        services.add(clazz);
-                    }
-            });
+                .flatMap(b -> Arrays.stream(b.getClass().getInterfaces()))
+                .collect(Collectors.toUnmodifiableList());
         ServiceLoader.registerServices(services);
     }
 
-    public static void registerServices(Iterable<Class<?>> classes) {
+    public static void registerServices(Iterable<? extends Class<?>> classes) {
 
         for (var clazz : classes) {
             var exposedService = clazz.getAnnotation(ExposedService.class);
             if (exposedService != null) {
-                var className = clazz.getSimpleName().toLowerCase();
+                _logger.error("getName " + clazz.getName());
+                _logger.error("getCanonicalName " + clazz.getCanonicalName());
+                _logger.error("getTypeName " + clazz.getTypeName());
+                var className = clazz.getName().toLowerCase();
                 if (_services.containsKey(className)) {
                     _logger.warn("Overwriting {} as it has already been added.", className);
                 }
@@ -107,6 +108,7 @@ public class ServiceLoader {
                     s.method = clazz.getSimpleName() + "." + method.getName();
                     s.topic = subscriber.topic();
                     s.pubsub = subscriber.name();
+                    s.legacy = subscriber.legacy();
                     _logger.info("Registering {} on {}", s.topic, s.method);
                     _subscriptions.add(s);
                 }

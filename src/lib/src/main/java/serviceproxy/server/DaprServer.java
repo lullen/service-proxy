@@ -9,6 +9,7 @@ import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -29,7 +30,7 @@ import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
 
 @Component
-public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
+public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase implements ServerHost {
     private static final Logger logger = LogManager.getLogger(DaprServer.class);
     private ServiceLoader serviceLoader;
 
@@ -45,6 +46,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
      * @param port Port to listen on.
      * @throws IOException Errors while trying to start service.
      */
+    @Override
     public DaprServer start(int port) throws IOException {
 
         this.server = ServerBuilder.forPort(port).addService(this).build().start();
@@ -68,6 +70,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
      *
      * @throws InterruptedException Propagated interrupted exception.
      */
+    @Override
     public void awaitTermination() throws InterruptedException {
         if (this.server != null) {
             this.server.awaitTermination();
@@ -139,7 +142,8 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
                 TopicSubscription
                     .newBuilder()
                     .setPubsubName(subscription.pubsub)
-                    .setTopic(subscription.topic).build()
+                    .setTopic(subscription.topic)
+                    .putMetadata("rawPayload", subscription.legacy.toString()).build()
             );
         }
         logger.info("Listing {} topics.", listTopics.getSubscriptionsCount());
@@ -148,7 +152,8 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
         responseObserver.onCompleted();
     }
 
-    public DaprServer registerServices(ApplicationContext applicationContext) {
+    @Override
+    public ServerHost registerServices(ApplicationContext applicationContext) {
         ServiceLoader.registerServices(applicationContext);
         return this;
     }
@@ -201,4 +206,5 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase {
         return parseFrom.invoke(null, request);
     }
 
+    
 }
