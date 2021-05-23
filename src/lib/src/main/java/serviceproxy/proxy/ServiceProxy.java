@@ -15,7 +15,7 @@ import serviceproxy.server.ExposedService;
 public class ServiceProxy implements InvocationHandler {
 
     private DaprProxy daprProxy;
-    
+
     private InProcProxy inProcProxy;
     private static ProxyType type;
 
@@ -26,7 +26,6 @@ public class ServiceProxy implements InvocationHandler {
         this.inProcProxy = inProcProxy;
 
     }
-
 
     public static void init(ProxyType type) {
         ServiceProxy.type = type;
@@ -45,7 +44,7 @@ public class ServiceProxy implements InvocationHandler {
         if (args.length != 1) {
             throw new Exception("Only one argument is allowed");
         }
-        
+
         var packageName = method.getDeclaringClass().getPackageName();
         var appId = packageName.substring(0, packageName.lastIndexOf("."));
 
@@ -53,10 +52,11 @@ public class ServiceProxy implements InvocationHandler {
 
         Class<?> returnType = getReturnType(method);
 
-
         var serviceAnnotation = method.getDeclaringClass().getAnnotation(ExposedService.class);
         if (type == ProxyType.Dapr && !serviceAnnotation.legacy()) {
             return daprProxy.invoke(appId, methodName, (Message) args[0], returnType);
+        } else if (type == ProxyType.Dapr && serviceAnnotation.legacy()) {
+            return inProcProxy.invoke(appId, methodName, (Message) args[0], returnType);
         } else {
             methodName = String.format("%s.%s", packageName, methodName);
             return inProcProxy.invoke(appId, methodName, (Message) args[0], returnType);

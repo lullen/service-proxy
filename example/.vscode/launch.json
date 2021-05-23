@@ -6,55 +6,53 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Application",
-            "request": "launch",
-            "mainClass": "server.Application",
-            "projectName": "server"
-        },
-        {
-            "type": "java",
-            "name": "Launch App",
-            "request": "launch",
-            "mainClass": "poc.app.Application",
-            "projectName": "app"
-        },
-        {
-            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
         },
         {
             "type": "java",
-            "name": "Launch Client",
+            "name": "Launch Application",
             "request": "launch",
-            "mainClass": "client.app.App",
-            "projectName": "client"
+            "mainClass": "accessone.app.Application",
+            "projectName": "accessone"
         },
         {
             "type": "java",
-            "name": "Client(Dapr)",
+            "name": "Launch Application(1)",
             "request": "launch",
-            "mainClass": "client.app.App",
-            "projectName": "client",
-            "preLaunchTask": "daprd-debug-client",
-            "postDebugTask": "daprd-down-client"
+            "mainClass": "accesstwo.app.Application",
+            "projectName": "accesstwo"
         },
         {
             "type": "java",
-            "name": "Launch Server",
+            "name": "Launch Application(2)",
             "request": "launch",
-            "mainClass": "server.app.App",
-            "projectName": "server"
+            "mainClass": "poc.app.Application",
+            "projectName": "app"
         },
         {
             "type": "java",
-            "name": "Server(Dapr)",
+            "name": "Launch Application(3)",
             "request": "launch",
-            "mainClass": "server.app.App",
-            "projectName": "server",
-            "preLaunchTask": "daprd-debug-server",
-            "postDebugTask": "daprd-down-server"
+            "mainClass": "engine.Application",
+            "projectName": "engine"
+        },
+        {
+            "type": "java",
+            "name": "Launch Manager",
+            "request": "launch",
+            "mainClass": "manager.app.Application",
+            "projectName": "manager"
+        },
+        {
+            "type": "java",
+            "name": "Launch Manager with Dapr",
+            "request": "launch",
+            "mainClass": "manager.app.Application",
+            "projectName": "manager",
+            "preLaunchTask": "daprd-debug",
+            "postDebugTask": "daprd-down"
         }
     ]
 }
