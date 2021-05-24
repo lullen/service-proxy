@@ -51,7 +51,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase implements S
     public DaprServer start(int port) throws IOException {
 
         this.server = ServerBuilder.forPort(port).addService(this).build().start();
-        logger.info("Server: started listening on port %d\n", port);
+        logger.info("Server: started listening on port {}\n", port);
 
         // Now we handle ctrl+c (or any other JVM shutdown)
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -104,6 +104,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase implements S
 
             if (response.hasError()) {
                 var status = getGrpcError(response.error.getStatusCode()).withDescription(response.error.getError());
+                status = Status.UNAUTHENTICATED;
                 responseObserver.onError(status.asRuntimeException());
                 return;
             }

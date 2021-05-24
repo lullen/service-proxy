@@ -1,18 +1,18 @@
 
 Legacy doesnt work as service loader is invalid
 
-### Client
-dapr run --app-id manager --app-protocol grpc --components-path ./components gradle run
+### Manager
+dapr run --app-id manager --app-protocol grpc --components-path ./manager/components gradle manager:run
 
-### Server
-dapr run --app-id engine --app-port 5000 --app-protocol grpc --components-path ./components gradle run
+### Engine
+dapr run --app-id engine --app-port 5000 --app-protocol grpc --components-path ./engine/components gradle engine:run
 
 
 ### AccessOne
-dapr run --app-id accessone --app-port 5001 --app-protocol grpc --components-path ./components gradle run
+dapr run --app-id accessone --app-port 5001 --app-protocol grpc --components-path ./accessone/components gradle accessone:run
 
 ### AccessTwo
-dapr run --app-id accesstwo --app-port 5002 --app-protocol grpc --components-path ./components gradle run
+dapr run --app-id accesstwo --app-port 5002 --app-protocol grpc --components-path ./accesstwo/components gradle accesstwo:run
 
 
 ### Rabbitmq

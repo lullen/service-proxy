@@ -37,7 +37,12 @@ public class DaprProxy extends BaseServiceProxy implements IServiceProxy {
                 methodResult = new Response<T>(resp);
             } catch (DaprException exception) {
                 var errorCode = StatusCode.Exception;
-                var code = Status.Code.valueOf(exception.getErrorCode());
+                Status.Code code;
+                try {
+                    code = Status.Code.valueOf(exception.getErrorCode());
+                } catch (IllegalArgumentException ex) {
+                    code = Status.Code.INTERNAL;
+                }
 
                 switch (code) {
                     case ALREADY_EXISTS:

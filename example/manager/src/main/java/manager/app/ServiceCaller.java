@@ -41,7 +41,7 @@ public class ServiceCaller {
             _logger.info(request.getText() + " " + request.getNewText());
 
             var resp = sp.hello(request).then(res -> sp.hello(request)).onError(error -> {
-                _logger.error("!!!ERROR!!! - " + error.getError());
+                _logger.error("!!!ERROR!!! - " + error.getStatusCode() + " - " + error.getError());
                 return new Response<HelloResponse>(HelloResponse.newBuilder().setText("Hello").build());
             });
             _logger.info("Response: " + resp.error.getError());
