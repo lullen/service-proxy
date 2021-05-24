@@ -12,6 +12,9 @@ plugins {
     id 'poc.java-library-conventions'
     id 'com.google.protobuf' version '0.8.16'
 }
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
 
 dependencies {
 

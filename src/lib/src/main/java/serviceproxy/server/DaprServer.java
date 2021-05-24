@@ -104,7 +104,6 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase implements S
 
             if (response.hasError()) {
                 var status = getGrpcError(response.error.getStatusCode()).withDescription(response.error.getError());
-                status = Status.UNAUTHENTICATED;
                 responseObserver.onError(status.asRuntimeException());
                 return;
             }
