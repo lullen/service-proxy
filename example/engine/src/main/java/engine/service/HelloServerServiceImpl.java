@@ -30,8 +30,12 @@ public class HelloServerServiceImpl implements Hello {
     @Override
     public Response<HelloResponse> hello(HelloRequest request) {
         _logger.info("HelloServerServiceImpl.hello called");
-        var response = HelloResponse.newBuilder().setText("Hello " + request.getText() + " " + request.getOtherText())
-                .setOtherText(request.getOtherText()).build();
+        var response = HelloResponse
+            .newBuilder()
+            .setText("Hello " + request.getText() + " " + request.getOtherText())
+            .setOtherText(request.getOtherText())
+            .build();
+
         _logger.info("Hello {} {}", request.getText(), new Date().getTime());
         if (request.getText().contains("2")) {
             _logger.warn("Returning error as \"{}\" contains \"2\"", request.getText());
@@ -55,8 +59,13 @@ public class HelloServerServiceImpl implements Hello {
 
         var sp = serviceProxy.create(accesstwo.interfaces.Hello.class);
         
-        var request2 = HelloTwoRequest.newBuilder().setText(request.getText()).setNewText(request.getNewText())
-        .setOtherText(request.getOtherText()).build();
+        var request2 = HelloTwoRequest
+            .newBuilder()
+            .setText(request.getText())
+            .setNewText(request.getNewText())
+            .setOtherText(request.getOtherText())
+            .build();
+
         var res2 = sp.hello(request2);
         if (res2.result != null) {
             System.out.println(res2.result.getText());

@@ -22,6 +22,7 @@
             <option value="$PROJECT_DIR$/engine.interfaces" />
             <option value="$PROJECT_DIR$/manager" />
             <option value="$PROJECT_DIR$/proto" />
+            <option value="$PROJECT_DIR$/../src/lib" />
           </set>
         </option>
       </GradleProjectSettings>
