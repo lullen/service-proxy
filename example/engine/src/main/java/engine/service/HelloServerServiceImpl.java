@@ -6,8 +6,10 @@ import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-
+import accesstwo.interfaces.TwoHello;
 import accesstwo.interfaces.proto.HelloTwoRequest;
+import engine.interfaces.EngineHello;
+import engine.interfaces.EngineHelloResponse;
 import engine.interfaces.Hello;
 import engine.interfaces.proto.HelloRequest;
 import engine.interfaces.proto.HelloResponse;
@@ -15,14 +17,17 @@ import serviceproxy.model.Error;
 import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
 import serviceproxy.proxy.ServiceProxy;
+import serviceproxy.proxyv2.ServiceProxyV2;
 
 @Component
 public class HelloServerServiceImpl implements Hello {
 
     private ServiceProxy serviceProxy;
+    private ServiceProxyV2 serviceProxyV2;
 
-    public HelloServerServiceImpl(ServiceProxy serviceProxy) {
+    public HelloServerServiceImpl(ServiceProxy serviceProxy, ServiceProxyV2 serviceProxyV2) {
         this.serviceProxy = serviceProxy;
+        this.serviceProxyV2 = serviceProxyV2;
     }
 
     private static final Logger _logger = LogManager.getLogger(HelloServerServiceImpl.class);
@@ -85,5 +90,18 @@ public class HelloServerServiceImpl implements Hello {
         var t = new TestClass2();
         t.hello = hello;
         return new Response<TestClass2>(t);
+    }
+
+    
+    @Override
+    public Response<EngineHelloResponse> v2Call(EngineHello request) {
+        // TODO Auto-generated method stub
+        var service = serviceProxyV2.create(accesstwo.interfaces.Hello.class);
+
+        return service
+            .v2Call(new TwoHello(request.text))
+            .then(req -> new Response<EngineHelloResponse>(new EngineHelloResponse(request.text)));
+
+        // return new Response<EngineHelloResponse>(new EngineHelloResponse(request.text));
     }
 }

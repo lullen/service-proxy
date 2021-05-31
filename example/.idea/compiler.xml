@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="11">
-      <module name="example.buildSrc" target="15" />
-      <module name="example.buildSrc.main" target="15" />
-      <module name="example.buildSrc.test" target="15" />
-      <module name="poc.accesstwo" target="15" />
-      <module name="poc.accesstwo.interfaces" target="15" />
-      <module name="poc.accesstwo.interfaces.main" target="15" />
-      <module name="poc.accesstwo.interfaces.test" target="15" />
-      <module name="poc.accesstwo.main" target="15" />
-      <module name="poc.accesstwo.test" target="15" />
-      <module name="poc.engine.interfaces" target="15" />
-      <module name="poc.engine.interfaces.main" target="15" />
-      <module name="poc.engine.interfaces.test" target="15" />
-      <module name="poc.manager" target="15" />
-      <module name="poc.manager.main" target="15" />
-      <module name="poc.manager.test" target="15" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="11" />
   </component>
 </project>

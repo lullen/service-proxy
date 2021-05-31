@@ -16,12 +16,12 @@ public class TimingMiddleware extends ProxyMiddleware {
     private long _start = 0;
 
     @Override
-    public <T> void before(String appId, String method, Message request, Class<T> responseClass) {
+    public <T> void before(String appId, String method, Object request, Class<T> responseClass) {
         _start = System.currentTimeMillis();
     }
 
     @Override
-    public <T> void after(String appId, String method, Message request, Response<T> response) {
+    public <T> void after(String appId, String method, Object request, Response<T> response) {
         _logger.info("Calling '{}' took {} ms", method, (System.currentTimeMillis() - _start));
     }
 }

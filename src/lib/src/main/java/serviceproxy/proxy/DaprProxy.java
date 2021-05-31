@@ -25,7 +25,7 @@ public class DaprProxy extends BaseServiceProxy implements IServiceProxy {
     }
 
     @Override()
-    public <T> Response<T> invoke(String appId, String method, Message request, Class<T> responseClass)
+    public <T> Response<T> invoke(String appId, String method, Object request, Class<T> responseClass)
             throws Exception {
 
         Response<T> methodResult;

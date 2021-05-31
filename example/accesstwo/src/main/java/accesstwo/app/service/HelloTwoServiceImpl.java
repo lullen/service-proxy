@@ -7,6 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import accesstwo.interfaces.Hello;
+import accesstwo.interfaces.TwoHello;
+import accesstwo.interfaces.TwoHelloResponse;
 import accesstwo.interfaces.proto.HelloTwoRequest;
 import accesstwo.interfaces.proto.HelloTwoResponse;
 import serviceproxy.model.Error;
@@ -33,6 +35,13 @@ public class HelloTwoServiceImpl implements Hello {
 
 
         return new Response<HelloTwoResponse>(response);
+    }
+
+    
+    @Override
+    public Response<TwoHelloResponse> v2Call(TwoHello request) {
+        // TODO Auto-generated method stub
+        return new Response<TwoHelloResponse>(new TwoHelloResponse(request.text));
     }
 
 }

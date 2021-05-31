@@ -1,0 +1,16 @@
+
+Legacy doesnt work as service loader is invalid
+
+### Manager
+dapr run --app-id manager --app-protocol http --components-path ./manager/components gradle manager:run
+
+### Engine
+dapr run --app-id engine --app-port 5000 --app-protocol http --components-path ./engine/components gradle engine:run
+
+### AccessOne
+dapr run --app-id accessone --app-port 5001 --app-protocol http --components-path ./accessone/components gradle accessone:run
+
+
+
+### Rabbitmq
+docker run --rm -it -d --hostname my-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management

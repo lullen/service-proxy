@@ -5,11 +5,15 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import accessone.interfaces.proto.HelloOneRequest;
+import manager.app.clients.HelloV2;
 import manager.app.clients.TestClient;
 import serviceproxy.model.Response;
 import serviceproxy.pubsub.EventPublisher;
 import serviceproxy.secret.SecretStore;
 import serviceproxy.proxy.ServiceProxy;
+import serviceproxy.proxyv2.InProcServiceProxy;
+import engine.interfaces.EngineHello;
+import engine.interfaces.EngineHelloResponse;
 import engine.interfaces.proto.HelloRequest;
 import engine.interfaces.proto.HelloResponse;
 
@@ -19,11 +23,14 @@ public class ServiceCaller {
     private ServiceProxy serviceProxy;
     private EventPublisher eventPublisher;
     private SecretStore secretStore;
+    private InProcServiceProxy proxyV2;
 
-    public ServiceCaller(ServiceProxy serviceProxy, EventPublisher eventPublisher, SecretStore secretStore) {
+    public ServiceCaller(ServiceProxy serviceProxy, EventPublisher eventPublisher,
+            SecretStore secretStore, InProcServiceProxy proxyV2) {
         this.serviceProxy = serviceProxy;
         this.eventPublisher = eventPublisher;
         this.secretStore = secretStore;
+        this.proxyV2 = proxyV2;
     }
 
     public long call() throws Exception {
@@ -36,26 +43,56 @@ public class ServiceCaller {
 
         while (count < 2) {
             _logger.info("-------------------------------");
-            var request = HelloRequest.newBuilder().setText("!Hello there from call #" + count++ + "!")
-                    .setNewText("What's up?").setOtherText("Alright").build();
+            var request =
+                    HelloRequest.newBuilder().setText("!Hello there from call #" + count++ + "!")
+                            .setNewText("What's up?").setOtherText("Alright").build();
             _logger.info(request.getText() + " " + request.getNewText());
 
             var resp = sp.hello(request).then(res -> sp.hello(request)).onError(error -> {
                 _logger.error("!!!ERROR!!! - " + error.getStatusCode() + " - " + error.getError());
-                return new Response<HelloResponse>(HelloResponse.newBuilder().setText("Hello").build());
+                return new Response<HelloResponse>(
+                        HelloResponse.newBuilder().setText("Hello").build());
             });
             _logger.info("Response: " + resp.error.getError());
 
-            var request2 = HelloOneRequest.newBuilder().setText(request.getText()).setNewText(request.getNewText())
+            var request2 = HelloOneRequest.newBuilder().setText(request.getText())
+                    .setNewText(request.getNewText())
                     .setOtherText(request.getOtherText()).build();
             var resp2 = sp2.hello(request2);
             _logger.info("Response2: " + resp2.error.getError());
-            
-            
+
+
             var resp3 = sp3.legacyCall(request);
             _logger.info("Legacy call: " + resp3.result.getText());
-            
 
+
+        }
+        _logger.info("Total: {} ms", (System.currentTimeMillis() - start));
+        return System.currentTimeMillis() - start;
+    }
+
+
+    public long callV2() throws Exception {
+        _logger.info("Howdy from call");
+        var count = 0;
+        var start = System.currentTimeMillis();
+        var sp = proxyV2.create(engine.interfaces.Hello.class);
+        var sp2 = proxyV2.create(accessone.interfaces.Hello.class);
+        var sp3 = proxyV2.create(TestClient.class);
+
+        while (count < 1000) {
+            var client = proxyV2.create(TestClient.class);
+            var req = new HelloV2();
+            req.text = "Hi there!";
+            var res = client.v2Call(req)
+                    .then(request -> {
+                        _logger.info(request.result.text);
+                        return sp.v2Call(new EngineHello(request.result.text));
+                    }).onError(error -> {
+                        _logger.error(error.getError());
+                        return new Response<>(error);
+                    });
+            count++;
         }
         _logger.info("Total: {} ms", (System.currentTimeMillis() - start));
         return System.currentTimeMillis() - start;
@@ -67,8 +104,9 @@ public class ServiceCaller {
         var start = System.currentTimeMillis();
 
         while (count < 2) {
-            var request = HelloRequest.newBuilder().setText("Hello there from publish #" + count++ + "!")
-                    .setNewText("What's up?").setOtherText("Alright").build();
+            var request =
+                    HelloRequest.newBuilder().setText("Hello there from publish #" + count++ + "!")
+                            .setNewText("What's up?").setOtherText("Alright").build();
 
             _logger.info(request.getText() + " " + request.getNewText());
             eventPublisher.publish(Constants.DefaultPubSub, "hello", request);

@@ -9,4 +9,5 @@ import serviceproxy.server.ExposedService;
 @ExposedService
 public interface Hello {
     Response<HelloTwoResponse> hello(HelloTwoRequest request);
+    Response<TwoHelloResponse> v2Call(TwoHello request);
 }

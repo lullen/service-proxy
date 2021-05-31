@@ -15,14 +15,17 @@ import serviceproxy.server.ExposedService;
 public class ServiceProxy implements InvocationHandler {
 
     private DaprProxy daprProxy;
-
+    private DaprHttpProxy daprHttpProxy;
     private InProcProxy inProcProxy;
+
     private static ProxyType type;
+
 
     // Maybe inject IServiceProxy and InProcProxy instead?
     // IServiceProxy will be Dapr / InProc and InProc will be used for legacy
-    public ServiceProxy(DaprProxy daprProxy, InProcProxy inProcProxy) {
+    public ServiceProxy(DaprProxy daprProxy, DaprHttpProxy daprHttpProxy, InProcProxy inProcProxy) {
         this.daprProxy = daprProxy;
+        this.daprHttpProxy = daprHttpProxy;
         this.inProcProxy = inProcProxy;
 
     }
@@ -53,10 +56,18 @@ public class ServiceProxy implements InvocationHandler {
         Class<?> returnType = getReturnType(method);
 
         var serviceAnnotation = method.getDeclaringClass().getAnnotation(ExposedService.class);
-        if (type == ProxyType.Dapr && !serviceAnnotation.legacy()) {
-            return daprProxy.invoke(appId, methodName, (Message) args[0], returnType);
-        } else if (type == ProxyType.Dapr && serviceAnnotation.legacy()) {
-            return inProcProxy.invoke(appId, methodName, (Message) args[0], returnType);
+        if (type == ProxyType.Dapr) {
+            if(serviceAnnotation.legacy()){
+                return inProcProxy.invoke(appId, methodName, (Message) args[0], returnType);
+            } else {
+                return daprProxy.invoke(appId, methodName, (Message) args[0], returnType);
+            }
+        } else if (type == ProxyType.Http) {
+            if(serviceAnnotation.legacy()){
+                return inProcProxy.invoke(appId, methodName, args[0], returnType);
+            } else {
+                return daprHttpProxy.invoke(appId, methodName, args[0], returnType);
+            }
         } else {
             methodName = String.format("%s.%s", packageName, methodName);
             return inProcProxy.invoke(appId, methodName, (Message) args[0], returnType);

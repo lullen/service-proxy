@@ -1,4 +1,4 @@
-package serviceproxy.server;
+package serviceproxy.server.grpc;
 
 import io.dapr.serializer.DefaultObjectSerializer;
 import io.dapr.v1.AppCallbackGrpc;
@@ -29,6 +29,7 @@ import serviceproxy.helpers.ServiceLoader;
 import serviceproxy.model.Response;
 import serviceproxy.model.StatusCode;
 import serviceproxy.proxy.ProxyType;
+import serviceproxy.server.ServerHost;
 
 @Component
 public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase implements ServerHost {
@@ -103,7 +104,7 @@ public class DaprServer extends AppCallbackGrpc.AppCallbackImplBase implements S
             var response = (Response<Message>) invokeMethod.invoke(refClass, innerRequest);
 
             if (response.hasError()) {
-                var status = getGrpcError(response.error.getStatusCode()).withDescription(response.error.getError());
+                var status = getGrpcError(response.error.getStatusCode()).withDescription(response.error.getErrorMessage());
                 responseObserver.onError(status.asRuntimeException());
                 return;
             }

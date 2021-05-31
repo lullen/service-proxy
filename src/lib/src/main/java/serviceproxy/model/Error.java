@@ -1,26 +1,26 @@
 package serviceproxy.model;
 
 public class Error {
-    private StatusCode _code = StatusCode.Ok;
-    private String _error = "";
+    private StatusCode code = StatusCode.Ok;
+    private String errorMessage = "";
 
-    public Error(StatusCode code, String error) {
-        _code = code;
-        _error = error;
+    public Error(StatusCode code, String errorMessage) {
+        this.code = code;
+        this.errorMessage = errorMessage;
     }
 
     public Error() {
     }
 
     public StatusCode getStatusCode() {
-        return _code;
+        return code;
     }
 
-    public String getError() {
-        return _error;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
     public Boolean hasError() {
-        return _code != StatusCode.Ok;
+        return code != StatusCode.Ok;
     }
 }

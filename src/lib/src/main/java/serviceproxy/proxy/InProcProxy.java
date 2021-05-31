@@ -34,7 +34,7 @@ public class InProcProxy extends BaseServiceProxy implements IServiceProxy {
 
     @Override()
     @SuppressWarnings("unchecked")
-    public <T> Response<T> invoke(String appId, String method, Message request, Class<T> responseClass)
+    public <T> Response<T> invoke(String appId, String method, Object request, Class<T> responseClass)
             throws Exception {
         this.runBefore(appId, method, request, responseClass);
         Response<T> methodResult;

@@ -16,13 +16,13 @@ public class BaseServiceProxy {
         _middlewares.addAll(middlewares);
     }
 
-    <T> void runBefore(String appId, String method, Message request, Class<T> responseClass) {
+    <T> void runBefore(String appId, String method, Object request, Class<T> responseClass) {
         for (var proxyMiddleware : _middlewares) {
             proxyMiddleware.before(appId, method, request, responseClass);
         }
     }
 
-    <T> void runAfter(String appId, String method, Message request, Response<T> response) {
+    <T> void runAfter(String appId, String method, Object request, Response<T> response) {
         for (var proxyMiddleware : _middlewares) {
             proxyMiddleware.after(appId, method, request, response);
         }

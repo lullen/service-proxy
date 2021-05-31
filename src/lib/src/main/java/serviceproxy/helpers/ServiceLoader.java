@@ -65,8 +65,11 @@ public class ServiceLoader {
 
     public static void registerServices(ApplicationContext ctx, ProxyType type) {
         var serviceDictionary = ctx.getBeansWithAnnotation(ExposedService.class);
-        var services = serviceDictionary.values().stream().flatMap(b -> Arrays.stream(b.getClass().getInterfaces()))
-                .collect(Collectors.toUnmodifiableList());
+        var services = serviceDictionary
+            .values()
+            .stream()
+            .flatMap(b -> Arrays.stream(b.getClass().getInterfaces()))
+            .collect(Collectors.toUnmodifiableList());
         ServiceLoader.registerServices(services, type);
     }
 

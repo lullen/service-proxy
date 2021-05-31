@@ -1,0 +1,39 @@
+package engine;
+
+import java.util.Collections;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+
+import serviceproxy.ServiceProxyConfiguration;
+import serviceproxy.proxy.ProxyType;
+import serviceproxy.proxy.ServiceProxy;
+import serviceproxy.server.grpc.DaprServer;
+
+@SpringBootApplication
+@Import(ServiceProxyConfiguration.class)
+public class Application {
+
+    public static void main(String[] args) {
+        var app = new SpringApplication(Application.class);
+        app.setDefaultProperties(Collections.singletonMap("server.port", "5000"));
+        app.run(args);
+    }
+
+    @Bean
+    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+        return args -> {
+            ServiceProxy.init(ProxyType.Http);
+            // var server = ctx.getBean(DaprServer.class);
+            // server
+            // .registerServices(ctx)
+            // .start(5000)
+            // .awaitTermination();
+            // server.registerServices(List.of(HelloServer.class));
+        };
+    }
+}

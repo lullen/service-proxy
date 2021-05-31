@@ -4,10 +4,10 @@ import java.util.function.Function;
 
 public class Response<T> {
     public Error error = new Error();
+
     public T result;
 
-    public Response() {
-    }
+    public Response() {}
 
     public Response(T result) {
         this.result = result;
@@ -33,5 +33,22 @@ public class Response<T> {
             return this;
         }
         return request.apply(this.error);
+    }
+
+
+    public Error getError() {
+        return error;
+    }
+
+    public void setError(Error error) {
+        this.error = error;
+    }
+
+    public T getResult() {
+        return result;
+    }
+
+    public void setResult(T result) {
+        this.result = result;
     }
 }

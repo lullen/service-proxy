@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package = "accessone.interfaces.proto";
+option java_outer_classname = "HelloOneProto";
+option java_multiple_files = true;
+
+message HelloOneRequest {
+  string text = 1;
+  string otherText = 2;
+  string newText = 3;
+}
+
+message HelloOneResponse {
+  string text = 1;
+  string otherText = 2;
+}
