@@ -1,7 +1,7 @@
 package serviceproxy.proxy;
 
 import java.util.Set;
-
+import javax.servlet.http.HttpServletRequest;
 import com.google.protobuf.Message;
 
 import org.springframework.stereotype.Component;
@@ -19,13 +19,16 @@ import serviceproxy.proxy.middleware.ProxyMiddleware;
 
 @Component
 public class DaprHttpProxy extends BaseServiceProxy implements IServiceProxy {
+    private HttpServletRequest request;
 
-    public DaprHttpProxy(Set<ProxyMiddleware> middlewares) {
+    public DaprHttpProxy(Set<ProxyMiddleware> middlewares, HttpServletRequest request) {
         super(middlewares);
+        this.request = request;
     }
 
     @Override()
-    public <T> Response<T> invoke(String appId, String method, Object request, Class<T> responseClass)
+    public <T> Response<T> invoke(String appId, String method, Object request,
+            Class<T> responseClass)
             throws Exception {
 
         Response<T> methodResult;
@@ -34,7 +37,16 @@ public class DaprHttpProxy extends BaseServiceProxy implements IServiceProxy {
         try (DaprClient client = new DaprClientBuilder().build()) {
             try {
                 var controllerMethod = method.replace('.', '/').toLowerCase();
-                var resp = client.invokeMethod(appId, controllerMethod, request, HttpExtension.POST, responseClass).block();
+
+                var call = client
+                        .invokeMethod(appId, controllerMethod, request, HttpExtension.POST,
+                                responseClass);
+                var traceparent = this.request.getHeader("traceparent");
+                if (traceparent != null && !traceparent.isEmpty()) {
+                    call = call.subscriberContext(c -> c.put("traceparent", traceparent));
+                }
+
+                var resp = call.block();
                 methodResult = new Response<T>(resp);
             } catch (DaprException exception) {
                 var errorCode = StatusCode.Exception;
