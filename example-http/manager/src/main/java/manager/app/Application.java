@@ -1,5 +1,6 @@
 package manager.app;
 
+import java.util.Map;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,10 +21,18 @@ public class Application {
 
     public static void main(String[] args) {
         var app = new SpringApplication(Application.class);
+        app.setDefaultProperties(Map.of(
+                "server.port", "8080"
+                // "server.http2.enabled", "false",
+                // "server.ssl.key-store-type", "PKCS12",
+                // "server.ssl.key-store", "classpath:localhost.p12",
+                // "server.ssl.key-store-password", "password",
+                // "server.ssl.key-alias", "localhost"
+                ));
         app.run(args);
     }
 
-    @Bean 
+    @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
             ServiceProxy.init(ProxyType.Http);

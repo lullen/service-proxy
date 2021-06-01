@@ -1,6 +1,7 @@
 package engine;
 
 import java.util.Collections;
+import java.util.Map;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
@@ -20,7 +21,17 @@ public class Application {
 
     public static void main(String[] args) {
         var app = new SpringApplication(Application.class);
-        app.setDefaultProperties(Collections.singletonMap("server.port", "5000"));
+        app.setDefaultProperties(Map.of(
+                "server.port", "5000"
+                // "server.http2.enabled", "false",
+                // "server.ssl.key-store-type", "PKCS12",
+                // "server.ssl.key-store", "classpath:localhost.p12",
+                // "server.ssl.key-store-password", "password",
+                // "server.ssl.key-alias", "localhost"
+                ));
+        // Collections.singletonMap("server.port", "5000"));
+        // server.http2.enabled=true
+
         app.run(args);
     }
 
