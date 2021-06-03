@@ -18,7 +18,7 @@ import serviceproxy.model.StatusCode;
 import serviceproxy.proxy.middleware.ProxyMiddleware;
 
 @Component
-public class DaprHttpProxy extends BaseServiceProxy implements IServiceProxy {
+public class DaprHttpProxy extends BaseServiceProxy implements ServiceProxyProvider, EventPublisherProvider, SecretStoreProvider {
     private HttpServletRequest request;
 
     public DaprHttpProxy(Set<ProxyMiddleware> middlewares, HttpServletRequest request) {

@@ -42,7 +42,7 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
             case Ok:
                 return HttpStatus.OK;
             case AlreadyExists:
-                return HttpStatus.BAD_REQUEST;
+                return HttpStatus.CONFLICT;
             case InvalidInput:
                 return HttpStatus.BAD_REQUEST;
             case NotFound:

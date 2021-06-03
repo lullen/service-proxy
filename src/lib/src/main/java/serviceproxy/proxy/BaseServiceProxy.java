@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.google.protobuf.Message;
-
 import serviceproxy.model.Response;
 import serviceproxy.proxy.middleware.ProxyMiddleware;
 

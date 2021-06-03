@@ -1,7 +1,5 @@
 package serviceproxy.proxy.middleware;
 
-import com.google.protobuf.Message;
-
 import serviceproxy.model.Response;
 
 public abstract class ProxyMiddleware {

@@ -4,5 +4,6 @@ public enum ProxyType {
     None,
     Dapr,
     InProc,
+    DaprHttp, 
     Http
 }

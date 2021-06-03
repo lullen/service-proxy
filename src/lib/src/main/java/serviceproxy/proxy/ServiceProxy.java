@@ -5,8 +5,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 
-import com.google.protobuf.Message;
-
 import org.springframework.stereotype.Component;
 
 import serviceproxy.server.ExposedService;
@@ -17,15 +15,18 @@ public class ServiceProxy implements InvocationHandler {
     private DaprProxy daprProxy;
     private DaprHttpProxy daprHttpProxy;
     private InProcProxy inProcProxy;
+    private HttpProxy httpProxy;
 
     private static ProxyType type;
 
-
-    // Maybe inject IServiceProxy and InProcProxy instead?
-    // IServiceProxy will be Dapr / InProc and InProc will be used for legacy
-    public ServiceProxy(DaprProxy daprProxy, DaprHttpProxy daprHttpProxy, InProcProxy inProcProxy) {
+    public ServiceProxy(
+            DaprProxy daprProxy,
+            DaprHttpProxy daprHttpProxy,
+            HttpProxy httpProxy,
+            InProcProxy inProcProxy) {
         this.daprProxy = daprProxy;
         this.daprHttpProxy = daprHttpProxy;
+        this.httpProxy = httpProxy;
         this.inProcProxy = inProcProxy;
 
     }
@@ -38,7 +39,7 @@ public class ServiceProxy implements InvocationHandler {
     public <T> T create(Class<T> clazz) {
 
         var classLoader = ServiceProxy.class.getClassLoader();
-        var proxy = Proxy.newProxyInstance(classLoader, new Class[] { clazz }, this);
+        var proxy = Proxy.newProxyInstance(classLoader, new Class[] {clazz}, this);
         return (T) proxy;
     }
 
@@ -56,21 +57,19 @@ public class ServiceProxy implements InvocationHandler {
         Class<?> returnType = getReturnType(method);
 
         var serviceAnnotation = method.getDeclaringClass().getAnnotation(ExposedService.class);
+        if (serviceAnnotation.legacy()) {
+            return inProcProxy.invoke(appId, methodName, args[0], returnType);
+        }
+
         if (type == ProxyType.Dapr) {
-            if(serviceAnnotation.legacy()){
-                return inProcProxy.invoke(appId, methodName, (Message) args[0], returnType);
-            } else {
-                return daprProxy.invoke(appId, methodName, (Message) args[0], returnType);
-            }
+            return daprProxy.invoke(appId, methodName, args[0], returnType);
+        } else if (type == ProxyType.DaprHttp) {
+            return daprHttpProxy.invoke(appId, methodName, args[0], returnType);
         } else if (type == ProxyType.Http) {
-            if(serviceAnnotation.legacy()){
-                return inProcProxy.invoke(appId, methodName, args[0], returnType);
-            } else {
-                return daprHttpProxy.invoke(appId, methodName, args[0], returnType);
-            }
+            return httpProxy.invoke(appId, methodName, args[0], returnType);
         } else {
             methodName = String.format("%s.%s", packageName, methodName);
-            return inProcProxy.invoke(appId, methodName, (Message) args[0], returnType);
+            return inProcProxy.invoke(appId, methodName, args[0], returnType);
         }
     }
 

@@ -1,7 +1,7 @@
 package engine.service;
 
 import java.util.Date;
-
+import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -25,9 +25,11 @@ import serviceproxy.proxy.ServiceProxy;
 public class HelloServerServiceImpl implements Hello {
 
     private ServiceProxy serviceProxy;
+    private HttpServletRequest req;
 
-    public HelloServerServiceImpl(ServiceProxy serviceProxy) {
+    public HelloServerServiceImpl(ServiceProxy serviceProxy, HttpServletRequest req) {
         this.serviceProxy = serviceProxy;
+        this.req = req;
     }
     private static final Logger _logger = LogManager.getLogger(HelloServerServiceImpl.class);
 
@@ -83,6 +85,13 @@ public class HelloServerServiceImpl implements Hello {
     @PostMapping("/hello/v2call")
     // @PostMapping("/Hello/v2Call")
     public Response<EngineHelloResponse> v2Call(@RequestBody EngineHello request) {
+        var names = req.getHeaderNames();
+        while (names.hasMoreElements()) {
+            var name = names.nextElement();
+            System.out.println(name + " - " + req.getHeader(name));
+        }
+        //  (n -> System.out);
+
         System.out.println("inside v2Call with text " + request.text);
         request = new EngineHello();
         request.text = "hello there!!!";

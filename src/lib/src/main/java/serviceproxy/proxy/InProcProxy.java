@@ -19,7 +19,7 @@ import serviceproxy.model.StatusCode;
 import serviceproxy.proxy.middleware.ProxyMiddleware;
 
 @Component
-public class InProcProxy extends BaseServiceProxy implements IServiceProxy {
+public class InProcProxy extends BaseServiceProxy implements ServiceProxyProvider, EventPublisherProvider, SecretStoreProvider {
     private static final Logger logger = LogManager.getLogger(InProcProxy.class);
 
     /**
