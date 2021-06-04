@@ -72,7 +72,7 @@ public class DaprProxy extends BaseServiceProxy implements ServiceProxyProvider,
     }
 
     @Override
-    public void publish(String pubsubName, String topic, Message request) throws Exception {
+    public void publish(String pubsubName, String topic, Object request) throws Exception {
         var json = com.google.protobuf.util.JsonFormat.printer().print(request);
         var serializedRequest = new DefaultObjectSerializer().serialize(json);
 

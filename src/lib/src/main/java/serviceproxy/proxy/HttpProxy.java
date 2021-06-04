@@ -1,4 +1,8 @@
 package serviceproxy.proxy;
+import serviceproxy.model.Error;
+import serviceproxy.model.Response;
+import serviceproxy.model.StatusCode;
+import serviceproxy.proxy.middleware.ProxyMiddleware;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,16 +16,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
-import serviceproxy.model.Error;
-import serviceproxy.model.Response;
-import serviceproxy.model.StatusCode;
-import serviceproxy.proxy.middleware.ProxyMiddleware;
 
 @Component
 public class HttpProxy extends BaseServiceProxy implements ServiceProxyProvider {
     private HttpClient httpClient;
 
-    public HttpProxy(Set<ProxyMiddleware> middlewares, HttpClient httpClient) {
+    public HttpProxy(Set<ProxyMiddleware> middlewares) {
         super(middlewares);
         this.httpClient = httpClient;
     }

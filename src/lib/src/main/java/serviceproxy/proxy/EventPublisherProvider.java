@@ -1,7 +1,5 @@
 package serviceproxy.proxy;
 
-import com.google.protobuf.Message;
-
 public interface EventPublisherProvider {
-    void publish(String pubsubName, String topic, Message request) throws Exception;
+    void publish(String pubsubName, String topic, Object request) throws Exception;
 }

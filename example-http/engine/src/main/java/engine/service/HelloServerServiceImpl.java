@@ -64,6 +64,7 @@ public class HelloServerServiceImpl implements Hello {
         });
         _logger.info(result.hasError().toString());
 
+        // return new Response<HelloResponse>(new Error(StatusCode.InvalidInput, "Invalid!"));
         return new Response<HelloResponse>(response);
     }
 
@@ -98,13 +99,13 @@ public class HelloServerServiceImpl implements Hello {
         
         
         // Ext call
-        var access = serviceProxy.create(accessone.interfaces.Hello.class);
-        var respOne = access.v2Call(new OneHello("Saying hello to one!"));
-        System.out.println("Called v2Call");
+        // var access = serviceProxy.create(accessone.interfaces.Hello.class);
+        // var respOne = access.v2Call(new OneHello("Saying hello to one!"));
+        // System.out.println("Called v2Call");
         //
 
         var resp = new Response<EngineHelloResponse>(new EngineHelloResponse(request.text));
-        // resp.error = new Error(StatusCode.Unauthorized, "Unauthorized!");
+        resp.error = new Error(StatusCode.InvalidInput, "Unauthorized!");
         return resp;
     }
 

@@ -18,7 +18,8 @@ import serviceproxy.model.StatusCode;
 import serviceproxy.proxy.middleware.ProxyMiddleware;
 
 @Component
-public class DaprHttpProxy extends BaseServiceProxy implements ServiceProxyProvider, EventPublisherProvider, SecretStoreProvider {
+public class DaprHttpProxy extends BaseServiceProxy
+        implements ServiceProxyProvider, EventPublisherProvider, SecretStoreProvider {
     private HttpServletRequest request;
 
     public DaprHttpProxy(Set<ProxyMiddleware> middlewares, HttpServletRequest request) {
@@ -36,6 +37,7 @@ public class DaprHttpProxy extends BaseServiceProxy implements ServiceProxyProvi
 
         try (DaprClient client = new DaprClientBuilder().build()) {
             try {
+                System.out.println("exception.getErrorCode()");
                 var controllerMethod = method.replace('.', '/').toLowerCase();
 
                 var call = client
@@ -49,32 +51,7 @@ public class DaprHttpProxy extends BaseServiceProxy implements ServiceProxyProvi
                 var resp = call.block();
                 methodResult = new Response<T>(resp);
             } catch (DaprException exception) {
-                var errorCode = StatusCode.Exception;
-                Status.Code code;
-                try {
-                    code = Status.Code.valueOf(exception.getErrorCode());
-                } catch (IllegalArgumentException ex) {
-                    code = Status.Code.INTERNAL;
-                }
-
-                switch (code) {
-                    case ALREADY_EXISTS:
-                        errorCode = StatusCode.AlreadyExists;
-                        break;
-                    case INVALID_ARGUMENT:
-                        errorCode = StatusCode.InvalidInput;
-                        break;
-                    case NOT_FOUND:
-                        errorCode = StatusCode.NotFound;
-                        break;
-                    case UNAUTHENTICATED:
-                        errorCode = StatusCode.Unauthorized;
-                        break;
-                    default:
-                        errorCode = StatusCode.Exception;
-                        break;
-                }
-
+                tryParseStatusCode(exception.getMessage());
                 methodResult = new Response<T>();
                 methodResult.error = new Error(errorCode, exception.getMessage());
             }
@@ -82,6 +59,20 @@ public class DaprHttpProxy extends BaseServiceProxy implements ServiceProxyProvi
 
         this.runAfter(appId, method, request, methodResult);
         return methodResult;
+    }
+
+    private int tryParseStatusCode(String message) {
+        if (message.contains("HTTP status code: 403")) {
+            return 403;
+        } else if (message.contains("HTTP status code: 409")) {
+            return 409;
+        } else if (message.contains("HTTP status code: 404")) {
+            return 404;
+        } else if (message.contains("HTTP status code: 400")) {
+            return 400;
+        } else {
+            return 500;
+        }
     }
 
     @Override

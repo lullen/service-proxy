@@ -1,5 +1,11 @@
 package serviceproxy.proxy;
 
+import serviceproxy.helpers.ServiceLoader;
+import serviceproxy.model.Error;
+import serviceproxy.model.Response;
+import serviceproxy.model.StatusCode;
+import serviceproxy.proxy.middleware.ProxyMiddleware;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -12,11 +18,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import serviceproxy.helpers.ServiceLoader;
-import serviceproxy.model.Error;
-import serviceproxy.model.Response;
-import serviceproxy.model.StatusCode;
-import serviceproxy.proxy.middleware.ProxyMiddleware;
 
 @Component
 public class InProcProxy extends BaseServiceProxy implements ServiceProxyProvider, EventPublisherProvider, SecretStoreProvider {
@@ -59,7 +60,7 @@ public class InProcProxy extends BaseServiceProxy implements ServiceProxyProvide
     }
 
     @Override
-    public void publish(String pubsubName, String topic, Message request) throws Exception {
+    public void publish(String pubsubName, String topic, Object request) throws Exception {
         if (pubsubName == "") {
             throw new Exception("Property pubsubName is not set");
         }

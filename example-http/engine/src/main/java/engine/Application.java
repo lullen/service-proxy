@@ -38,7 +38,7 @@ public class Application {
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
-            ServiceProxy.init(ProxyType.Http);
+            ServiceProxy.init(ProxyType.DaprHttp);
             // var server = ctx.getBean(DaprServer.class);
             // server
             // .registerServices(ctx)

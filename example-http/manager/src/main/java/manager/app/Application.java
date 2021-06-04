@@ -35,10 +35,10 @@ public class Application {
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
-            ServiceProxy.init(ProxyType.Http);
+            ServiceProxy.init(ProxyType.DaprHttp);
             // EventPublisher.init(ProxyType.Http);
-            SecretStore.init(ProxyType.Http);
-            ServiceLoader.registerServices(ctx, ProxyType.Http);
+            SecretStore.init(ProxyType.DaprHttp);
+            ServiceLoader.registerServices(ctx, ProxyType.DaprHttp);
         };
     }
 }
